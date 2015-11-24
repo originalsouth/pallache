@@ -284,6 +284,11 @@ namespace pallache
                     stack.pop();
                 }
                 break;
+                default:
+                {
+                    train.push_back(t);
+                }
+                break;
             }
             while(!stack.empty())
             {
@@ -305,7 +310,8 @@ namespace pallache
         X rpncalc()
         {
             std::string newvar="";
-            if(tokens[0].type==types::variable and tokens.back().str=="=")
+            if(tokens.empty()) return std::numeric_limits<X>::quiet_NaN();
+            else if(tokens[0].type==types::variable and tokens.back().str=="=")
             {
                 tokens.pop_back();
                 newvar=tokens[0].str;
@@ -814,6 +820,11 @@ namespace pallache
                         }
                     }
                     break;
+                    default:
+                    {
+                        return std::numeric_limits<X>::quiet_NaN();
+                    }
+                    break;
                 }
             }
             #ifdef PALLACHE_DEBUG
@@ -825,7 +836,8 @@ namespace pallache
                 variables[newvar]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
                 return variables[newvar];
             }
-            else return (std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+            else if(!x.empty()) return (std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+            else return std::numeric_limits<X>::quiet_NaN();
         }
         X parse_infix(std::string a)
         {
