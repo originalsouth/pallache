@@ -1,3 +1,9 @@
+/* By BC van Zuiden -- Leiden, November 2015 */
+/* Probably very buggy USE AT OWN RISK this will brick everything you own */
+/* NOBODY but YOU is liable for anything that happened in result of using this */
+/* WARNING: DON'T RUN THIS PROGRAM THIS WILL DESTROY YOUR COMPUTER AND/OR KILOBOTS */
+/* Any copyrighted piece of code within this code is NOT mine but forced on me by an anonymous guy with a gun*/
+
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
