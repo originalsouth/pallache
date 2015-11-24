@@ -11,16 +11,16 @@ A small and simple header only math parser library:
 Feel free to reuse and contribute, pull requests are very welcome!
 This program is (and forever will be) a work in progress.
 
+### This program acknowledges:
+* [Samuel Pallache](https://en.wikipedia.org/wiki/Samuel_Pallache) yarr!
+* [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
+* [neovim](https://neovim.io)
+
 ### Todo
 * Implement function definitions 
 * Support for automatic differentiation of functions 
 * Support for complex numbers
 * Improvements / Stability maintenance 
-
-This program acknowledges:
-* [Samuel Pallache](https://en.wikipedia.org/wiki/Samuel_Pallache) yarr!
-* [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
-* [neovim](https://neovim.io)
 
 ### Building
 To build run something like:
