@@ -7,7 +7,6 @@
 #include <vector>
 #include <unordered_map>
 #include <stack>
-#include <queue>
 #include <limits>
 
 #ifdef PALLACHE_DEBUG
@@ -50,6 +49,64 @@ namespace pallache
         std::vector<token> tokens;
         std::unordered_map<std::string,X> variables;
         std::unordered_map<std::string,std::string> functions;
+        void init()
+        {
+            variables.clear();
+            variables["pi"]=std::acos(-1.0);
+            variables["e"]=std::exp(1.0);
+            variables["phi"]=0.5*(1+std::sqrt(5.0));
+            variables["nan"]=std::numeric_limits<X>::quiet_NaN();
+            variables["inf"]=std::numeric_limits<X>::infinity();
+            variables["minf"]=-std::numeric_limits<X>::infinity();
+            variables["eps"]=-std::numeric_limits<X>::epsilon();
+            functions.clear();
+            functions["cos"]="";
+            functions["sin"]="";
+            functions["tan"]="";
+            functions["acos"]="";
+            functions["asin"]="";
+            functions["atan"]="";
+            functions["atan2"]="";
+            functions["cosh"]="";
+            functions["sinh"]="";
+            functions["tanh"]="";
+            functions["acosh"]="";
+            functions["asinh"]="";
+            functions["atanh"]="";
+            functions["exp"]="";
+            functions["log"]="";
+            functions["log10"]="";
+            functions["exp2"]="";
+            functions["expm1"]="";
+            functions["ilogb"]="";
+            functions["log1p"]="";
+            functions["log2"]="";
+            functions["logb"]="";
+            functions["pow"]="";
+            functions["sqrt"]="";
+            functions["cbrt"]="";
+            functions["hypot"]="";
+            functions["erf"]="";
+            functions["erfc"]="";
+            functions["tgamma"]="";
+            functions["lgamma"]="";
+            functions["ceil"]="";
+            functions["floor"]="";
+            functions["fmod"]="";
+            functions["trunc"]="";
+            functions["round"]="";
+            functions["rint"]="";
+            functions["nearbyint"]="";
+            functions["remainder"]="";
+            functions["abs"]="";
+            functions["sign"]="";
+            functions["sgn"]="";
+            functions["bool"]="";
+            functions["delta"]="";
+            functions["kdelta"]="";
+            functions["not"]="";
+            functions["delvar"]="";
+        }
         X sign(X x)
         {
             if(x>0.0) return 1.0;
@@ -70,6 +127,31 @@ namespace pallache
             for(size_t i=0;i<opsSz;i++) if(x==ops[i]) return true;
             return false;
         }
+        int order(std::string a)
+        {
+            if(a=="**") return 0;
+            else if(a=="!") return 0;
+            else if(a=="*") return 1;
+            else if(a=="%") return 1;
+            else if(a=="/") return 1;
+            else if(a=="+") return 2;
+            else if(a=="-") return 2;
+            else if(a=="&") return 3;
+            else if(a=="^") return 5;
+            else if(a=="|") return 6;
+            else if(a=="&&") return 7;
+            else if(a=="||") return 8;
+            else return 9;
+        }
+        bool preproccess(std::string a)
+        {
+            if(a=="reset")
+            {
+                init();
+                return false;
+            }
+            else return true;
+        }
         void tokenize(std::string a)
         {
             tokens.clear();
@@ -83,13 +165,13 @@ namespace pallache
                     i++;
                     continue;
                 }
-                else if(isdigit(a[i]) or (a[i]=='-' and (tokens.empty() or tokens.back().type!=types::number)))
+                else if(isdigit(a[i]) or (a[i]=='-' and i+1<aSz and isdigit(a[i+1]) and (tokens.empty() or tokens.back().type!=types::number)))
                 {
                     for(;k<aSz;k++) if(!flt(a[k]) and !((a[k]=='+' or a[k]=='-') and (a[k-1]=='e' or a[k-1]=='E'))) break;
                     tokens.push_back(token(types::number,a.substr(j,k-j)));
                     i+=k-j;
                 }
-                else if(isalpha(a[i]))
+                else if(isalpha(a[i]) or (a[i]=='-' and i+1<aSz and isalpha(a[i+1]) and (tokens.empty() or tokens.back().type!=types::number)))
                 {
                     for(;k<aSz;k++) if(!isalnum(a[k]) and a[k]!='_') break;
                     std::string b=a.substr(j,k-j);
@@ -121,28 +203,147 @@ namespace pallache
                 else break;
             }
             #ifdef PALLACHE_DEBUG
+            PALLACHE_DEBUG_OUT("tokens");
             for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
             #endif
         }
         void shuntyard()
         {
-            //TODO: implement shunting yard algorithm here
+            std::stack<token> stack;
+            std::vector<token> train;
+            for(token t: tokens) switch(t.type)
+            {
+                case types::number:
+                {
+                    train.push_back(t);
+                }
+                break;
+                case types::variable:
+                {
+                    train.push_back(t);
+                }
+                break;
+                case types::operators:
+                {
+                    if(!stack.empty() and stack.top().type==types::operators and order(t.str)>=order(stack.top().str))
+                    {
+                        train.push_back(stack.top());
+                        stack.pop();
+                    }
+                    stack.push(t);
+                }
+                break;
+                case types::function:
+                {
+                    stack.push(t);
+                }
+                break;
+                case types::comma:
+                {
+                    int ptype=-1;
+                    while(!stack.empty() and (ptype=stack.top().type)!=types::bracket_open)
+                    {
+                        train.push_back(stack.top());
+                        stack.pop();
+                    }
+                    if(!stack.empty() and ptype!=types::bracket_open)
+                    {
+                        tokens.clear();
+                        tokens.push_back(token(types::variable,"nan"));
+                        return;
+                    }
+                }
+                break;
+                case types::bracket_open:
+                {
+                    stack.push(t);
+                }
+                break;
+                case types::bracket_close:
+                {
+                    int ptype=-1;
+                    while(!stack.empty() and (ptype=stack.top().type)!=types::bracket_open)
+                    {
+                        train.push_back(stack.top());
+                        stack.pop();
+                    }
+                    if(!stack.empty() and ptype!=types::bracket_open)
+                    {
+                        tokens.clear();
+                        tokens.push_back(token(types::variable,"nan"));
+                        return;
+                    }
+                    stack.pop();
+                }
+                break;
+            }
+            while(!stack.empty())
+            {
+                train.push_back(stack.top());
+                if(stack.top().type==types::bracket_open)
+                {
+                    tokens.clear();
+                    tokens.push_back(token(types::variable,"nan"));
+                    return;
+                }
+                stack.pop();
+            }
+            tokens=train;
+            #ifdef PALLACHE_DEBUG
+            PALLACHE_DEBUG_OUT("tokens");
+            for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+            #endif
         }
         X rpncalc()
         {
+            std::string newvar="";
+            if(tokens[0].type==types::variable and tokens.back().str=="=")
+            {
+                tokens.pop_back();
+                newvar=tokens[0].str;
+                tokens.erase(tokens.begin());
+            }
+            else if(tokens[0].type==types::variable and tokens.back().str=="delvar")
+            {
+                if(tokens.size()>2) return std::numeric_limits<X>::quiet_NaN();
+                else
+                {
+                    if(variables.find(tokens[0].str)!=variables.end())
+                    {
+                        X var=variables[tokens[0].str];
+                        variables.erase(tokens[0].str);
+                        return var;
+                    }
+                    else return std::numeric_limits<X>::quiet_NaN();
+                }
+
+            }
+            //TODO: implement function definitions
             std::vector<X> x;
             for(token t: tokens)
             {
                 switch(t.type)
                 {
                     case types::number:
+                    {
                         x.push_back(std::stod(t.str)); //FIXME: not typesafe
+                    }
                     break;
                     case types::variable:
-                        if(variables.find(t.str)!=variables.end()) x.push_back(variables[t.str]);
+                    {
+                        X p;
+                        if(t.str[0]=='-')
+                        {
+                            p=-1.0;
+                            t.str.erase(0,1);
+                        }
+                        else p=1.0;
+                        if(variables.find(t.str)!=variables.end()) x.push_back(p*variables[t.str]);
                         else x.push_back(std::numeric_limits<X>::quiet_NaN());
+                    }
                     break;
                     case types::operators:
+                    {
                         if(t.str=="+")
                         {
                             const size_t q=x.size();
@@ -304,7 +505,7 @@ namespace pallache
                             const size_t q=x.size();
                             if(q>1)
                             {
-                                x[q-2]=(X)((int)(x[q-2])&(int)(x[q-1]));
+                                x[q-2]=(X)((long int)(x[q-2])&(long int)(x[q-1]));
                                 x.pop_back();
                             }
                             else return std::numeric_limits<X>::quiet_NaN();
@@ -314,7 +515,7 @@ namespace pallache
                             const size_t q=x.size();
                             if(q>1)
                             {
-                                x[q-2]=(X)((int)(x[q-2])|(int)(x[q-1]));
+                                x[q-2]=(X)((long int)(x[q-2])|(long int)(x[q-1]));
                                 x.pop_back();
                             }
                             else return std::numeric_limits<X>::quiet_NaN();
@@ -324,21 +525,15 @@ namespace pallache
                             const size_t q=x.size();
                             if(q>1)
                             {
-                                x[q-2]=(X)((int)(x[q-2])^(int)(x[q-1]));
+                                x[q-2]=(X)((long int)(x[q-2])^(long int)(x[q-1]));
                                 x.pop_back();
                             }
                             else return std::numeric_limits<X>::quiet_NaN();
                         }
-                        else if(t.str=="=")
-                        {
-                            //TODO: implement variable definitions here
-                        }
-                        else if(t.str==":=")
-                        {
-                            //TODO: implement function definitions here
-                        }
+                    }
                     break;
                     case types::function:
+                    {
                         if(t.str=="cos")
                         {
                             const size_t q=x.size();
@@ -609,73 +804,44 @@ namespace pallache
                             if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
                             else return std::numeric_limits<X>::quiet_NaN();
                         }
+                    }
                     break;
                 }
             }
-            return (std::abs(x[0])<=std::numeric_limits<X>::epsilon())?0.0:x[0];
+            #ifdef PALLACHE_DEBUG
+            PALLACHE_DEBUG_OUT("values");
+            for(X f: x) PALLACHE_DEBUG_OUT("%f",f);
+            #endif
+            if(!newvar.empty())
+            {
+                variables[newvar]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+                return variables[newvar];
+            }
+            else return (std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
         }
         X parse_infix(std::string a)
         {
-            tokenize(a);
-            shuntyard();
-            return rpncalc();
+            if(preproccess(a))
+            {
+                tokenize(a);
+                shuntyard();
+                return rpncalc();
+            }
+            else return 0.0;
         }
         X parse_postfix(std::string a)
         {
-            tokenize(a);
-            return rpncalc();
+            if(preproccess(a))
+            {
+                tokenize(a);
+                return rpncalc();
+            }
+            else return 0.0;
         }
         public:
         pallache()
         {
-            variables["pi"]=std::acos(-1.0);
-            variables["e"]=std::exp(1.0);
-            variables["phi"]=0.5*(1+std::sqrt(5.0));
-            functions["cos"]="";
-            functions["sin"]="";
-            functions["tan"]="";
-            functions["acos"]="";
-            functions["asin"]="";
-            functions["atan"]="";
-            functions["atan2"]="";
-            functions["cosh"]="";
-            functions["sinh"]="";
-            functions["tanh"]="";
-            functions["acosh"]="";
-            functions["asinh"]="";
-            functions["atanh"]="";
-            functions["exp"]="";
-            functions["log"]="";
-            functions["log10"]="";
-            functions["exp2"]="";
-            functions["expm1"]="";
-            functions["ilogb"]="";
-            functions["log1p"]="";
-            functions["log2"]="";
-            functions["logb"]="";
-            functions["pow"]="";
-            functions["sqrt"]="";
-            functions["cbrt"]="";
-            functions["hypot"]="";
-            functions["erf"]="";
-            functions["erfc"]="";
-            functions["tgamma"]="";
-            functions["lgamma"]="";
-            functions["ceil"]="";
-            functions["floor"]="";
-            functions["fmod"]="";
-            functions["trunc"]="";
-            functions["round"]="";
-            functions["rint"]="";
-            functions["nearbyint"]="";
-            functions["remainder"]="";
-            functions["abs"]="";
-            functions["sign"]="";
-            functions["sgn"]="";
-            functions["bool"]="";
-            functions["delta"]="";
-            functions["kdelta"]="";
-            functions["not"]="";
+            init();
         }
         X operator()(std::string a)
         {
