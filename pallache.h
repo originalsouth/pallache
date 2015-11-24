@@ -153,11 +153,13 @@ namespace pallache
         }
         bool preproccess(std::string a)
         {
+            //TODO: trim a here
             if(a=="reset")
             {
                 init();
                 return false;
             }
+            else if(a[0]=='#') return false;
             else return true;
         }
         void tokenize(std::string a)
