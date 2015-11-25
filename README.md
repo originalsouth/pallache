@@ -18,9 +18,11 @@ This program is (and forever will be) a work in progress.
 
 ### Todo
 * Implement function definitions 
+* Throw errors instead of returning nans
+* Improvements / Stability maintenance 
+* Add support for random numbers
 * Support for automatic differentiation of functions 
 * Support for complex numbers
-* Improvements / Stability maintenance 
 
 ### Building
 To build run something like:

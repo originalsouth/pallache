@@ -57,7 +57,7 @@ namespace pallache
         std::vector<token> tokens;
         std::unordered_map<std::string,X> variables;
         std::unordered_map<std::string,std::string> functions;
-        void init()
+        void init_var()
         {
             variables.clear();
             variables["pi"]=std::acos(-1.0);
@@ -67,6 +67,9 @@ namespace pallache
             variables["inf"]=std::numeric_limits<X>::infinity();
             variables["minf"]=-std::numeric_limits<X>::infinity();
             variables["eps"]=-std::numeric_limits<X>::epsilon();
+        }
+        void init_func()
+        {
             functions.clear();
             functions["cos"]="";
             functions["sin"]="";
@@ -115,6 +118,11 @@ namespace pallache
             functions["not"]="";
             functions["delvar"]="";
         }
+        void init()
+        {
+            init_var();
+            init_func();
+        }
         X sign(X x)
         {
             if(x>0.0) return 1.0;
@@ -150,15 +158,6 @@ namespace pallache
             else if(a=="&&") return 7;
             else if(a=="||") return 8;
             else return 9;
-        }
-        bool preproccess(std::string a)
-        {
-            if(a=="reset")
-            {
-                init();
-                return false;
-            }
-            else return true;
         }
         void tokenize(std::string a)
         {
@@ -841,22 +840,14 @@ namespace pallache
         }
         X parse_infix(std::string a)
         {
-            if(preproccess(a))
-            {
-                tokenize(a);
-                shuntyard();
-                return rpncalc();
-            }
-            else return 0.0;
+            tokenize(a);
+            shuntyard();
+            return rpncalc();
         }
         X parse_postfix(std::string a)
         {
-            if(preproccess(a))
-            {
-                tokenize(a);
-                return rpncalc();
-            }
-            else return 0.0;
+            tokenize(a);
+            return rpncalc();
         }
         public:
         pallache()
@@ -870,6 +861,42 @@ namespace pallache
         X operator[](std::string a)
         {
             return parse_postfix(a);
+        }
+        bool var(std::string a)
+        {
+            return (variables.find[a]!=variables.end());
+        }
+        bool func(std::string a)
+        {
+            return (function.find[a]!=function.end());
+        }
+        bool var(std::string a,X x)
+        {
+            return variables.find[a]=x;
+        }
+        bool func(std::string a,std::string b)
+        {
+            return function.find[a]=b;
+        }
+        void del_var(std::string a)
+        {
+            variables.erase(a);
+        }
+        void del_func(std::string a)
+        {
+            function.erase(a);
+        }
+        void reset_vars()
+        {
+            init_var();
+        }
+        void reset_funcs()
+        {
+            init_func();
+        }
+        void reset_all()
+        {
+            init();
         }
     };
 };
