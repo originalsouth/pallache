@@ -864,11 +864,11 @@ namespace pallache
         }
         bool var(std::string a)
         {
-            return (variables.find[a]!=variables.end());
+            return (variables.find(a)!=variables.end());
         }
         bool func(std::string a)
         {
-            return (function.find[a]!=function.end());
+            return (function.find(a)!=function.end());
         }
         void var(std::string a,X x)
         {
