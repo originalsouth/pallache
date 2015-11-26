@@ -872,11 +872,11 @@ namespace pallache
         }
         bool var(std::string a,X x)
         {
-            return variables.find[a]=x;
+            return variables[a]=x;
         }
         bool func(std::string a,std::string b)
         {
-            return function.find[a]=b;
+            return function[a]=b;
         }
         void del_var(std::string a)
         {
