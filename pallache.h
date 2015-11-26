@@ -870,13 +870,13 @@ namespace pallache
         {
             return (function.find[a]!=function.end());
         }
-        bool var(std::string a,X x)
+        void var(std::string a,X x)
         {
-            return variables[a]=x;
+            variables[a]=x;
         }
-        bool func(std::string a,std::string b)
+        void func(std::string a,std::string b)
         {
-            return function[a]=b;
+            function[a]=b;
         }
         void del_var(std::string a)
         {
