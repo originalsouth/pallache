@@ -583,7 +583,11 @@ namespace pallache
                         else if(t.str=="atan2")
                         {
                             const size_t q=x.size();
-                            if(q>1) x[q-2]=std::atan2(x[q-2],x[q-1]);
+                            if(q>1)
+                            {
+                                x[q-2]=std::atan2(x[q-2],x[q-1]);
+                                x.pop_back();
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="cosh")
@@ -679,7 +683,11 @@ namespace pallache
                         else if(t.str=="pow")
                         {
                             const size_t q=x.size();
-                            if(q>1) x[q-2]=std::pow(x[q-2],x[q-1]);
+                            if(q>1)
+                            {
+                                x[q-2]=std::pow(x[q-2],x[q-1]);
+                                x.pop_back();
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="sqrt")
@@ -697,7 +705,11 @@ namespace pallache
                         else if(t.str=="hypot")
                         {
                             const size_t q=x.size();
-                            if(q>1) x[q-2]=std::hypot(x[q-2],x[q-1]);
+                            if(q>1)
+                            {
+                                x[q-2]=std::hypot(x[q-2],x[q-1]);
+                                x.pop_back();
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="erf")
@@ -739,7 +751,11 @@ namespace pallache
                         else if(t.str=="fmod")
                         {
                             const size_t q=x.size();
-                            if(q>1) x[q-2]=std::fmod(x[q-2],x[q-1]);
+                            if(q>1)
+                            {
+                                x[q-2]=std::fmod(x[q-2],x[q-1]);
+                                x.pop_back();
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="trunc")
@@ -769,7 +785,11 @@ namespace pallache
                         else if(t.str=="remainder")
                         {
                             const size_t q=x.size();
-                            if(q>1) x[q-2]=std::remainder(x[q-2],x[q-1]);
+                            if(q>1)
+                            {
+                                x[q-2]=std::remainder(x[q-2],x[q-1]);
+                                x.pop_back();
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="abs")
@@ -805,7 +825,11 @@ namespace pallache
                         else if(t.str=="kdelta")
                         {
                             const size_t q=x.size();
-                            if(q>1) x[q-2]=(X)(x[q-2]==x[q-1]);
+                            if(q>1)
+                            {
+                                x[q-2]=(X)(x[q-2]==x[q-1]);
+                                x.pop_back();
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="not")
