@@ -539,7 +539,7 @@ namespace pallache
                             }
                             else throw std::string("pallache: syntax error");
                         }
-                        else throw std::string("pallache: invalid operator");
+                        else throw std::string("pallache: invalid operator \"")+t.str+std::string("\"");
                     }
                     break;
                     case types::function:
