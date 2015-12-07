@@ -330,7 +330,7 @@ namespace pallache
                 {
                     case types::number:
                     {
-                        x.push_back(std::stod(t.str)); //FIXME: not typesafe
+                        x.push_back((X)std::stold(t.str));
                     }
                     break;
                     case types::variable:
