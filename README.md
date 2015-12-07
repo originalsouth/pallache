@@ -18,7 +18,7 @@ This program is (and forever will be) a work in progress.
 
 ### Todo
 * Implement function definitions 
-* Throw errors instead of returning nans
+* Make a regression tester
 * Improvements / Stability maintenance 
 * Add support for random numbers
 * Support for automatic differentiation of functions 

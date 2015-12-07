@@ -15,7 +15,17 @@ int main(int argc,char *argv[])
         printf(">>> ");
         fgets(a,2048,file);
         a[strcspn(a,"\n")]=0;
-        if(strcmp(a,"q") and strcmp(a,"quit") and strcmp(a,"exit")) printf("%.16f\n",parser(string(a)));
+        if(strcmp(a,"q") and strcmp(a,"quit") and strcmp(a,"exit"))
+        {
+            try
+            {
+                printf("%.17g\n",parser(string(a)));
+            }
+            catch(string errormsg)
+            {
+                printf("%s\n",errormsg.c_str());
+            }
+        }
         else break;
     }
     return EXIT_SUCCESS;
