@@ -17,13 +17,33 @@ int main(int argc,char *argv[])
         a[strcspn(a,"\n")]=0;
         if(strcmp(a,"q") and strcmp(a,"quit") and strcmp(a,"exit"))
         {
-            try
+            if(a[0]=='#') continue;
+            else if(!strcmp(a,"")) continue;
+            else if(!strcmp(a,"reset_all"))
             {
-                printf("%.17g\n",parser(string(a)));
+                parser.reset_all();
+                printf("functions and variables table reinitialized\n");
             }
-            catch(string errormsg)
+            else if(!strcmp(a,"reset_vars"))
             {
-                printf("%s\n",errormsg.c_str());
+                parser.reset_all();
+                printf("variables table reinitialized\n");
+            }
+            else if(!strcmp(a,"reset_funcs"))
+            {
+                parser.reset_all();
+                printf("functions table reinitialized\n");
+            }
+            else
+            {
+                try
+                {
+                    printf("%.17g\n",parser(string(a)));
+                }
+                catch(string errormsg)
+                {
+                    printf("%s\n",errormsg.c_str());
+                }
             }
         }
         else break;
