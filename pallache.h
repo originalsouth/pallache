@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <stack>
 #include <limits>
+#include <typeinfo>
 
 #ifdef PALLACHE_DEBUG
 #define PALLACHE_DEBUG_OUT(str,...)\
@@ -66,7 +67,7 @@ namespace pallache
             variables["nan"]=std::numeric_limits<X>::quiet_NaN();
             variables["inf"]=std::numeric_limits<X>::infinity();
             variables["minf"]=-std::numeric_limits<X>::infinity();
-            variables["eps"]=-std::numeric_limits<X>::epsilon();
+            variables["eps"]=std::numeric_limits<X>::epsilon();
         }
         void init_func()
         {
@@ -117,6 +118,7 @@ namespace pallache
             functions["kdelta"]="";
             functions["not"]="";
             functions["delvar"]="";
+            functions["delfunc"]="";
         }
         void init()
         {
@@ -207,7 +209,7 @@ namespace pallache
                     tokens.push_back(token(types::comma,a.substr(j,k-j)));
                     i+=k-j;
                 }
-                else break;
+                else throw std::string("pallache: unknown token \"")+a[i]+std::string("\"");
             }
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("tokens");
@@ -316,7 +318,7 @@ namespace pallache
                         variables.erase(tokens[0].str);
                         return var;
                     }
-                    else throw std::string("pallache: variable ")+tokens[0].str+std::string(" does not exist");
+                    else throw std::string("pallache: variable \"")+tokens[0].str+std::string("\" does not exist");
                 }
             }
             else if(tokens[0].type==types::variable and tokens.back().str=="delfunc")
@@ -330,7 +332,10 @@ namespace pallache
                 {
                     case types::number:
                     {
-                        x.push_back((X)std::stold(t.str));
+                        if(typeid(X)==typeid(float)) x.push_back(std::stof(t.str));
+                        else if(typeid(X)==typeid(double)) x.push_back(std::stod(t.str));
+                        else if(typeid(X)==typeid(long double)) x.push_back(std::stold(t.str));
+                        else x.push_back((X)std::stold(t.str));
                     }
                     break;
                     case types::variable:
@@ -343,7 +348,7 @@ namespace pallache
                         }
                         else p=1.0;
                         if(variables.find(t.str)!=variables.end()) x.push_back(p*variables[t.str]);
-                        else throw std::string("pallache: variable ")+t.str+std::string(" does not exist");
+                        else throw std::string("pallache: variable \"")+t.str+std::string("\" does not exist");
                     }
                     break;
                     case types::operators:
@@ -534,6 +539,7 @@ namespace pallache
                             }
                             else throw std::string("pallache: syntax error");
                         }
+                        else throw std::string("pallache: invalid operator");
                     }
                     break;
                     case types::function:
@@ -808,6 +814,7 @@ namespace pallache
                             if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
                             else throw std::string("pallache: syntax error");
                         }
+                        else throw std::string("pallache: function definition error");
                     }
                     break;
                     default:
