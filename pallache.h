@@ -60,10 +60,18 @@ namespace pallache
         std::unordered_map<std::string,std::string> functions;
         void init_var()
         {
+            const char e6x9[]={0x74,0x68,0x65,0x5f,0x61,0x6e,0x73,
+                               0x77,0x65,0x72,0x5f,0x74,0x6f,0x5f,
+                               0x6c,0x69,0x66,0x65,0x5f,0x74,0x68,
+                               0x65,0x5f,0x75,0x6e,0x69,0x76,0x65,
+                               0x72,0x73,0x65,0x5f,0x61,0x6e,0x64,
+                               0x5f,0x65,0x76,0x65,0x72,0x79,0x74,
+                               0x68,0x69,0x6e,0x67,0x0};
             variables.clear();
             variables["pi"]=std::acos(-1.0);
             variables["e"]=std::exp(1.0);
             variables["phi"]=0.5*(1+std::sqrt(5.0));
+            variables[std::string(e6x9)]=(X)052;
             variables["nan"]=std::numeric_limits<X>::quiet_NaN();
             variables["inf"]=std::numeric_limits<X>::infinity();
             variables["minf"]=-std::numeric_limits<X>::infinity();
@@ -147,19 +155,19 @@ namespace pallache
         }
         int order(std::string a)
         {
-            if(a=="**") return 0;
-            else if(a=="!") return 0;
-            else if(a=="*") return 1;
-            else if(a=="%") return 1;
-            else if(a=="/") return 1;
-            else if(a=="+") return 2;
-            else if(a=="-") return 2;
-            else if(a=="&") return 3;
-            else if(a=="^") return 5;
-            else if(a=="|") return 6;
-            else if(a=="&&") return 7;
-            else if(a=="||") return 8;
-            else return 9;
+            if(a=="!") return 0;
+            if(a=="**") return 1;
+            else if(a=="*") return 2;
+            else if(a=="%") return 2;
+            else if(a=="/") return 2;
+            else if(a=="+") return 3;
+            else if(a=="-") return 3;
+            else if(a=="&") return 4;
+            else if(a=="^") return 6;
+            else if(a=="|") return 7;
+            else if(a=="&&") return 8;
+            else if(a=="||") return 9;
+            else return 10;
         }
         void tokenize(std::string a)
         {
