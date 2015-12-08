@@ -316,6 +316,7 @@ namespace pallache
                     {
                         X var=variables[tokens[0].str];
                         variables.erase(tokens[0].str);
+                        variables["ans"]=var;
                         return var;
                     }
                     else throw std::string("pallache: variable \"")+tokens[0].str+std::string("\" does not exist");
@@ -854,10 +855,14 @@ namespace pallache
             #endif
             if(!newvar.empty())
             {
-                variables[newvar]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
-                return variables[newvar];
+                variables["ans"]=variables[newvar]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+                return variables["ans"];
             }
-            else if(x.size()==1) return (std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+            else if(x.size()==1)
+            {
+                variables["ans"]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+                return variables["ans"];
+            }
             else throw std::string("pallache: syntax error");
         }
         X parse_infix(std::string a)
