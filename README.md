@@ -18,29 +18,26 @@ This program is (and forever will be) a work in progress.
 * Support for automatic differentiation of functions 
 * Support for complex numbers
 
-### This program acknowledges:
-* [Samuel Pallache](https://en.wikipedia.org/wiki/Samuel_Pallache) yarr!
-* [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
-* [neovim](https://neovim.io)
-
 ### Building
 To build run something like:
 ```
 make
 ```
-To clean run:
-```
-make clean
-```
 To debug:
 ```
 make debug
 ```
+This will print out some debug messages while parsing.
 To test:
 ```
 make test
 ```
 This should print a bunch of ones and exit (otherwise file a bug report).
+To clean run:
+```
+make clean
+```
+This will remove the compiled binary.
 
 You can install by copying the compiled binary to your path.
 
@@ -50,11 +47,12 @@ After compilation run something like:
 ./pallache 
 ```
 Should get you started.  
-If you are lazy try:
+If you are lazy -- like me -- try:
 ```
 rlwrap ./pallache
 ```
-Or even more conviently:
-```
-rlwrap -c ./pallache
-```
+
+### Acknowledgements
+* [Samuel Pallache](https://en.wikipedia.org/wiki/Samuel_Pallache) yarr!
+* [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
+* [neovim](https://neovim.io)
