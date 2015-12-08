@@ -23,16 +23,19 @@ To build run something like:
 ```
 make
 ```
+
 To debug:
 ```
 make debug
 ```
 This will print out some debug messages while parsing.
+
 To test:
 ```
 make test
 ```
 This should print a bunch of ones and exit (otherwise file a bug report).
+
 To clean run:
 ```
 make clean
@@ -47,6 +50,7 @@ After compilation run something like:
 ./pallache 
 ```
 Should get you started.  
+
 If you are lazy -- like me -- try:
 ```
 rlwrap ./pallache
