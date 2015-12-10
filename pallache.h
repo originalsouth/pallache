@@ -437,8 +437,11 @@ namespace pallache
                         else if(t.str[0]=='!' and t.str.find_first_not_of(t.str[0])==std::string::npos)
                         {
                             const size_t q=x.size();
-                            const X k=t.str.size();
-                            if(q>0) x[q-1]=std::pow(k,(x[q-1]-1.0)/k)*std::tgamma(x[q-1]/k+1.0)/std::tgamma(1.0/k+1.0);
+                            if(q>0)
+                            {
+                                const size_t k=t.str.size();
+                                x[q-1]=std::pow(k,(x[q-1]-1.0)/k)*std::tgamma(x[q-1]/k+1.0)/std::tgamma(1.0/k+1.0);
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                         else if(t.str=="&&")
