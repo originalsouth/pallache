@@ -9,14 +9,16 @@ A small and simple header only math parser library (written in C++14):
 /* Inclusion of that code is forced upon me by a scary anonymous guy with a gun*/
 ```
 Feel free to reuse and contribute, pull requests are very welcome!
-This program is (and forever will be) a work in progress.
+This code is (and forever will be) a work in progress.
 
 ### Todo
 * Implement function definitions 
-* Improvements / Stability maintenance 
-* Add support for random numbers
-* Support for automatic differentiation of functions 
-* Support for complex numbers
+* Add more special functions and operators
+* Add (psuedo) random number generator(s)
+* Add support for complex numbers (maybe quaternions?)
+* Add support for automatic differentiation of functions (using dual numbers)
+* Add support for vectors and matrices (do we really want to go there?)
+* Improvements / Bugfixes / Stability / Maintenance (the usual)
 
 ### Building
 To build run something like:

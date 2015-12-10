@@ -55,9 +55,23 @@ namespace pallache
                 str=a;
             }
         };
+        struct functor
+        {
+            bool builtin;
+            std::vector<std::string> var;
+            std::string expr;
+            size_t dim()
+            {
+                return var.size();
+            }
+            functor(bool p=false)
+            {
+                builtin=p;
+            }
+        };
         std::vector<token> tokens;
         std::unordered_map<std::string,X> variables;
-        std::unordered_map<std::string,std::string> functions;
+        std::unordered_map<std::string,functor> functions;
         void init_var()
         {
             const char e6x9[]={0x74,0x68,0x65,0x5f,0x61,0x6e,0x73,
@@ -66,67 +80,67 @@ namespace pallache
                                0x65,0x5f,0x75,0x6e,0x69,0x76,0x65,
                                0x72,0x73,0x65,0x5f,0x61,0x6e,0x64,
                                0x5f,0x65,0x76,0x65,0x72,0x79,0x74,
-                               0x68,0x69,0x6e,0x67,0x0};
+                               0x68,0x69,0x6e,0x67,0x00,0x00,0x00};
             variables.clear();
-            variables["pi"]=std::acos(-1.0);
-            variables["e"]=std::exp(1.0);
-            variables["phi"]=0.5*(1+std::sqrt(5.0));
-            variables[std::string(e6x9)]=(X)052;
-            variables["nan"]=std::numeric_limits<X>::quiet_NaN();
-            variables["inf"]=std::numeric_limits<X>::infinity();
-            variables["minf"]=-std::numeric_limits<X>::infinity();
-            variables["eps"]=std::numeric_limits<X>::epsilon();
+            variables.emplace("pi",std::acos(-1.0));
+            variables.emplace("e",std::exp(1.0));
+            variables.emplace("phi",0.5*(1+std::sqrt(5.0)));
+            variables.emplace(std::string(e6x9),(X)052);
+            variables.emplace("nan",std::numeric_limits<X>::quiet_NaN());
+            variables.emplace("inf",std::numeric_limits<X>::infinity());
+            variables.emplace("minf",-std::numeric_limits<X>::infinity());
+            variables.emplace("eps",std::numeric_limits<X>::epsilon());
         }
         void init_func()
         {
             functions.clear();
-            functions["cos"]="";
-            functions["sin"]="";
-            functions["tan"]="";
-            functions["acos"]="";
-            functions["asin"]="";
-            functions["atan"]="";
-            functions["atan2"]="";
-            functions["cosh"]="";
-            functions["sinh"]="";
-            functions["tanh"]="";
-            functions["acosh"]="";
-            functions["asinh"]="";
-            functions["atanh"]="";
-            functions["exp"]="";
-            functions["log"]="";
-            functions["log10"]="";
-            functions["exp2"]="";
-            functions["expm1"]="";
-            functions["ilogb"]="";
-            functions["log1p"]="";
-            functions["log2"]="";
-            functions["logb"]="";
-            functions["pow"]="";
-            functions["sqrt"]="";
-            functions["cbrt"]="";
-            functions["hypot"]="";
-            functions["erf"]="";
-            functions["erfc"]="";
-            functions["tgamma"]="";
-            functions["lgamma"]="";
-            functions["ceil"]="";
-            functions["floor"]="";
-            functions["fmod"]="";
-            functions["trunc"]="";
-            functions["round"]="";
-            functions["rint"]="";
-            functions["nearbyint"]="";
-            functions["remainder"]="";
-            functions["abs"]="";
-            functions["sign"]="";
-            functions["sgn"]="";
-            functions["bool"]="";
-            functions["delta"]="";
-            functions["kdelta"]="";
-            functions["not"]="";
-            functions["delvar"]="";
-            functions["delfunc"]="";
+            functions.emplace("cos",functor(true));
+            functions.emplace("sin",functor(true));
+            functions.emplace("tan",functor(true));
+            functions.emplace("acos",functor(true));
+            functions.emplace("asin",functor(true));
+            functions.emplace("atan",functor(true));
+            functions.emplace("atan2",functor(true));
+            functions.emplace("cosh",functor(true));
+            functions.emplace("sinh",functor(true));
+            functions.emplace("tanh",functor(true));
+            functions.emplace("acosh",functor(true));
+            functions.emplace("asinh",functor(true));
+            functions.emplace("atanh",functor(true));
+            functions.emplace("exp",functor(true));
+            functions.emplace("log",functor(true));
+            functions.emplace("log10",functor(true));
+            functions.emplace("exp2",functor(true));
+            functions.emplace("expm1",functor(true));
+            functions.emplace("ilogb",functor(true));
+            functions.emplace("log1p",functor(true));
+            functions.emplace("log2",functor(true));
+            functions.emplace("logb",functor(true));
+            functions.emplace("pow",functor(true));
+            functions.emplace("sqrt",functor(true));
+            functions.emplace("cbrt",functor(true));
+            functions.emplace("hypot",functor(true));
+            functions.emplace("erf",functor(true));
+            functions.emplace("erfc",functor(true));
+            functions.emplace("tgamma",functor(true));
+            functions.emplace("lgamma",functor(true));
+            functions.emplace("ceil",functor(true));
+            functions.emplace("floor",functor(true));
+            functions.emplace("fmod",functor(true));
+            functions.emplace("trunc",functor(true));
+            functions.emplace("round",functor(true));
+            functions.emplace("rint",functor(true));
+            functions.emplace("nearbyint",functor(true));
+            functions.emplace("remainder",functor(true));
+            functions.emplace("abs",functor(true));
+            functions.emplace("sign",functor(true));
+            functions.emplace("sgn",functor(true));
+            functions.emplace("bool",functor(true));
+            functions.emplace("delta",functor(true));
+            functions.emplace("kdelta",functor(true));
+            functions.emplace("not",functor(true));
+            functions.emplace("delvar",functor(true));
+            functions.emplace("delfunc",functor(true));
         }
         void init()
         {
@@ -559,301 +573,309 @@ namespace pallache
                     break;
                     case types::function:
                     {
-                        if(t.str=="cos")
+                        if(functions[t.str].builtin)
                         {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::cos(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="sin")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::sin(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="tan")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::tan(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="acos")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::acos(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="asin")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::asin(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="atan")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::atan(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="atan2")
-                        {
-                            const size_t q=x.size();
-                            if(q>1)
+                            if(t.str=="cos")
                             {
-                                x[q-2]=std::atan2(x[q-2],x[q-1]);
-                                x.pop_back();
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::cos(x[q-1]);
+                                else throw std::string("pallache: syntax error");
                             }
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="cosh")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::cosh(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="sinh")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::sinh(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="tanh")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::tanh(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="acosh")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::acosh(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="asinh")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::asinh(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="atanh")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::atanh(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="exp")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::exp(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="log")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::log(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="log10")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::log10(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="exp2")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::exp2(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="expm1")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::expm1(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="ilogb")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::ilogb(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="log1p")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::log1p(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="log2")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::log2(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="logb")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::logb(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="pow")
-                        {
-                            const size_t q=x.size();
-                            if(q>1)
+                            else if(t.str=="sin")
                             {
-                                x[q-2]=std::pow(x[q-2],x[q-1]);
-                                x.pop_back();
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::sin(x[q-1]);
+                                else throw std::string("pallache: syntax error");
                             }
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="sqrt")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::sqrt(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="cbrt")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::cbrt(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="hypot")
-                        {
-                            const size_t q=x.size();
-                            if(q>1)
+                            else if(t.str=="tan")
                             {
-                                x[q-2]=std::hypot(x[q-2],x[q-1]);
-                                x.pop_back();
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::tan(x[q-1]);
+                                else throw std::string("pallache: syntax error");
                             }
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="erf")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::erf(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="erfc")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::erfc(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="tgamma")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::tgamma(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="lgamma")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::lgamma(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="ceil")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::ceil(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="floor")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::ceil(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="fmod")
-                        {
-                            const size_t q=x.size();
-                            if(q>1)
+                            else if(t.str=="acos")
                             {
-                                x[q-2]=std::fmod(x[q-2],x[q-1]);
-                                x.pop_back();
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::acos(x[q-1]);
+                                else throw std::string("pallache: syntax error");
                             }
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="trunc")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::trunc(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="round")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::round(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="rint")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::nearbyint(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="nearbyint")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::nearbyint(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="remainder")
-                        {
-                            const size_t q=x.size();
-                            if(q>1)
+                            else if(t.str=="asin")
                             {
-                                x[q-2]=std::remainder(x[q-2],x[q-1]);
-                                x.pop_back();
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::asin(x[q-1]);
+                                else throw std::string("pallache: syntax error");
                             }
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="abs")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=std::abs(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="sign")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=sign(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="sgn")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=sign(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="bool")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=(X)(bool)(x[q-1]);
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="delta")
-                        {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=x[q-1]==0.0?std::numeric_limits<X>::infinity():0.0;
-                            else throw std::string("pallache: syntax error");
-                        }
-                        else if(t.str=="kdelta")
-                        {
-                            const size_t q=x.size();
-                            if(q>1)
+                            else if(t.str=="atan")
                             {
-                                x[q-2]=(X)(x[q-2]==x[q-1]);
-                                x.pop_back();
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::atan(x[q-1]);
+                                else throw std::string("pallache: syntax error");
                             }
-                            else throw std::string("pallache: syntax error");
+                            else if(t.str=="atan2")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=std::atan2(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="cosh")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::cosh(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="sinh")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::sinh(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="tanh")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::tanh(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="acosh")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::acosh(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="asinh")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::asinh(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="atanh")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::atanh(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="exp")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::exp(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="log")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::log(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="log10")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::log10(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="exp2")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::exp2(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="expm1")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::expm1(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="ilogb")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::ilogb(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="log1p")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::log1p(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="log2")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::log2(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="logb")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::logb(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="pow")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=std::pow(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="sqrt")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::sqrt(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="cbrt")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::cbrt(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="hypot")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=std::hypot(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="erf")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::erf(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="erfc")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::erfc(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="tgamma")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::tgamma(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="lgamma")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::lgamma(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="ceil")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::ceil(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="floor")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::ceil(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="fmod")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=std::fmod(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="trunc")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::trunc(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="round")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::round(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="rint")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::nearbyint(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="nearbyint")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::nearbyint(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="remainder")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=std::remainder(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="abs")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=std::abs(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="sign")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=sign(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="sgn")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=sign(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="bool")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=(X)(bool)(x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="delta")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=x[q-1]==0.0?std::numeric_limits<X>::infinity():0.0;
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="kdelta")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=(X)(x[q-2]==x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else if(t.str=="not")
+                            {
+                                const size_t q=x.size();
+                                if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
+                                else throw std::string("pallache: syntax error");
+                            }
+                            else throw std::string("pallache: function definition error");
                         }
-                        else if(t.str=="not")
+                        else
                         {
-                            const size_t q=x.size();
-                            if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
+                            if(true); //TODO
                             else throw std::string("pallache: syntax error");
                         }
-                        else throw std::string("pallache: function definition error");
                     }
                     break;
                     default:
