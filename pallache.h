@@ -68,6 +68,17 @@ namespace pallache
             {
                 builtin=p;
             }
+            void substitute(size_t i,X x)
+            {
+                PALLACHE_DEBUG_OUT("%s",var[i].c_str());
+                size_t p;
+                while((p=expr.find(var[i]))!=std::string::npos)
+                {
+                    std::string value=std::to_string(x);
+                    expr.replace(p,var[i].size(),value);
+                    p+=value.size();
+                }
+            }
         };
         std::vector<token> tokens;
         std::unordered_map<std::string,X> variables;
@@ -141,6 +152,10 @@ namespace pallache
             functions.emplace("not",functor(true));
             functions.emplace("delvar",functor(true));
             functions.emplace("delfunc",functor(true));
+            functions.emplace("test",functor(false));
+            functions["test"].expr="$x $y **";
+            functions["test"].var.push_back("$x");
+            functions["test"].var.push_back("$y");
         }
         void init()
         {
@@ -182,6 +197,19 @@ namespace pallache
             else if(a=="&&") return 8;
             else if(a=="||") return 9;
             else return 10;
+        }
+        void eval(std::string fnc,std::vector<X> &x)
+        {
+            functor f=functions[fnc];
+            const size_t q=x.size();
+            const size_t I=f.dim();
+            for(size_t i=0;i<I;i++)
+            {
+                f.substitute(i,x[q-i-1]);
+                x.pop_back();
+            }
+            PALLACHE_DEBUG_OUT("%s",f.expr.c_str());
+            x.push_back(parse_postfix(f.expr));
         }
         void tokenize(std::string a)
         {
@@ -873,7 +901,7 @@ namespace pallache
                         }
                         else
                         {
-                            if(true); //TODO
+                            if(x.size()>=functions[t.str].dim()) eval(t.str,x);
                             else throw std::string("pallache: syntax error");
                         }
                     }
