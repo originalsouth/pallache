@@ -363,9 +363,22 @@ namespace pallache
                     else throw std::string("pallache: variable \"")+tokens[0].str+std::string("\" does not exist");
                 }
             }
-            else if(tokens[0].type==types::variable and tokens.back().str=="delfunc")
+            else if(tokens[0].type==types::function and tokens.back().str=="delfunc")
             {
-                throw std::string("pallache: function removal is not supported yet");
+                if(tokens.size()>2) throw std::string("pallache: syntax error");
+                else
+                {
+                    if(functions.find(tokens[0].str)!=functions.end())
+                    {
+                        if(!functions[tokens[0].str].builtin)
+                        {
+                            functions.erase(tokens[0].str);
+                            return variables["ans"];
+                        }
+                        else throw std::string("pallache: function \"")+tokens[0].str+std::string("\" is builtin");
+                    }
+                    else throw std::string("pallache: function \"")+tokens[0].str+std::string("\" does not exist");
+                }
             }
             std::vector<X> x;
             for(token t: tokens)
