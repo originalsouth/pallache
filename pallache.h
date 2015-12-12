@@ -198,19 +198,6 @@ namespace pallache
             else if(a=="||") return 9;
             else return 10;
         }
-        void eval(std::string fnc,std::vector<X> &x)
-        {
-            functor f=functions[fnc];
-            const size_t q=x.size();
-            const size_t I=f.dim();
-            for(size_t i=0;i<I;i++)
-            {
-                f.substitute(i,x[q-i-1]);
-                x.pop_back();
-            }
-            PALLACHE_DEBUG_OUT("%s",f.expr.c_str());
-            x.push_back(parse_postfix(f.expr));
-        }
         void tokenize(std::string a)
         {
             tokens.clear();
@@ -901,7 +888,20 @@ namespace pallache
                         }
                         else
                         {
-                            if(x.size()>=functions[t.str].dim()) eval(t.str,x);
+                            if(x.size()>=functions[t.str].dim())
+                            {
+
+                                functor f=functions[t.str];
+                                const size_t q=x.size();
+                                const size_t I=f.dim();
+                                for(size_t i=0;i<I;i++)
+                                {
+                                    f.substitute(i,x[q-i-1]);
+                                    x.pop_back();
+                                }
+                                PALLACHE_DEBUG_OUT("%s",f.expr.c_str());
+                                x.push_back(parse_postfix(f.expr));
+                            }
                             else throw std::string("pallache: syntax error");
                         }
                     }
