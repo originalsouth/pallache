@@ -80,7 +80,6 @@ namespace pallache
                 }
             }
         };
-        std::vector<token> tokens;
         std::unordered_map<std::string,X> variables;
         std::unordered_map<std::string,functor> functions;
         void init_var()
@@ -198,9 +197,8 @@ namespace pallache
             else if(a=="||") return 9;
             else return 10;
         }
-        void tokenize(std::string a)
+        void tokenize(std::string a,std::vector<token> &tokens)
         {
-            tokens.clear();
             const size_t aSz=a.size();
             for(size_t i=0;i<aSz;)
             {
@@ -259,7 +257,7 @@ namespace pallache
             for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
             #endif
         }
-        void shuntyard()
+        void shuntyard(std::vector<token> &tokens)
         {
             std::stack<token> stack;
             std::vector<token> train;
@@ -336,7 +334,7 @@ namespace pallache
             for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
             #endif
         }
-        X rpncalc()
+        X rpncalc(std::vector<token> &tokens)
         {
             std::string newvar="";
             if(tokens.empty()) throw std::string("pallache: syntax error");
@@ -890,13 +888,12 @@ namespace pallache
                         {
                             if(x.size()>=functions[t.str].dim())
                             {
-
                                 functor f=functions[t.str];
                                 const size_t q=x.size();
                                 const size_t I=f.dim();
                                 for(size_t i=0;i<I;i++)
                                 {
-                                    f.substitute(i,x[q-i-1]);
+                                    f.substitute(I-i-1,x[q-i-1]);
                                     x.pop_back();
                                 }
                                 PALLACHE_DEBUG_OUT("%s",f.expr.c_str());
@@ -931,14 +928,16 @@ namespace pallache
         }
         X parse_infix(std::string a)
         {
-            tokenize(a);
-            shuntyard();
-            return rpncalc();
+            std::vector<token> tokens;
+            tokenize(a,tokens);
+            shuntyard(tokens);
+            return rpncalc(tokens);
         }
         X parse_postfix(std::string a)
         {
-            tokenize(a);
-            return rpncalc();
+            std::vector<token> tokens;
+            tokenize(a,tokens);
+            return rpncalc(tokens);
         }
         public:
         pallache()
