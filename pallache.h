@@ -366,10 +366,12 @@ namespace pallache
                             for(std::string var: f.var) if(f.expr.back().str==var) f.expr.back().type=types::number;
                         }
                         functions.emplace(fname,f);
-                        variables["ans"]=1.0;
+                        const size_t J=f.dim();
+                        for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
+                        variables["ans"]=rpncalc(f.expr);
                         return variables["ans"];
                     }
-                    else throw std::string("pallache: in function definition of ")+fname+std::string(": ")+tokens[i].str+std::string(" is not a valid variable");
+                    else throw std::string("pallache: in function definition of ")+fname+std::string(" ")+tokens[i].str+std::string(" is not a valid variable");
                 }
                 throw std::string("pallache: error in function definition of ")+fname;
             }
