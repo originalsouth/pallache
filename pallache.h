@@ -44,6 +44,7 @@ namespace pallache
             operators,
             function,
             comma,
+            internal,
         };
         struct token
         {
@@ -59,25 +60,19 @@ namespace pallache
         {
             bool builtin;
             std::vector<std::string> var;
-            std::string expr;
-            size_t dim()
-            {
-                return var.size();
-            }
+            std::vector<token> expr;
             functor(bool p=false)
             {
                 builtin=p;
             }
+            size_t dim()
+            {
+                return var.size();
+            }
             void substitute(size_t i,X x)
             {
                 PALLACHE_DEBUG_OUT("%s",var[i].c_str());
-                size_t p;
-                while((p=expr.find(var[i]))!=std::string::npos)
-                {
-                    std::string value=std::to_string(x);
-                    expr.replace(p,var[i].size(),value);
-                    p+=value.size();
-                }
+                for(token &t: expr) if(t.str==var[i]) t.str=std::to_string(x);
             }
         };
         std::unordered_map<std::string,X> variables;
@@ -152,9 +147,11 @@ namespace pallache
             functions.emplace("delvar",functor(true));
             functions.emplace("delfunc",functor(true));
             functions.emplace("test",functor(false));
-            functions["test"].expr="$x $y **";
-            functions["test"].var.push_back("$x");
-            functions["test"].var.push_back("$y");
+            functions["test"].expr.push_back(token(types::number,"x"));
+            functions["test"].expr.push_back(token(types::number,"y"));
+            functions["test"].expr.push_back(token(types::operators,"**"));
+            functions["test"].var.push_back("x");
+            functions["test"].var.push_back("y");
         }
         void init()
         {
@@ -232,7 +229,9 @@ namespace pallache
                 else if(op(a[i]))
                 {
                     for(;k<aSz;k++) if(!op(a[k]) or a[k]=='-') break;
-                    tokens.push_back(token(types::operators,a.substr(j,k-j)));
+                    std::string b=a.substr(j,k-j);
+                    tokens.push_back(token(types::operators,b));
+                    if(b==":=") tokens.push_back(token(types::internal,""));
                     i+=k-j;
                 }
                 else if(a[i]=='(')
@@ -316,6 +315,11 @@ namespace pallache
                     stack.pop();
                 }
                 break;
+                case types::internal:
+                {
+                    train.push_back(t);
+                }
+                break;
                 default:
                 {
                     throw std::string("pallache: syntax error");
@@ -346,7 +350,28 @@ namespace pallache
             }
             else if(tokens[0].type==types::variable and tokens.back().str==":=")
             {
-                throw std::string("pallache: function definitions are not supported yet");
+                functor f(false);
+                tokens.pop_back();
+                std::string fname=tokens[0].str;
+                const size_t I=tokens.size();
+                for(size_t i=1;i<I;i++)
+                {
+                    if(tokens[i].type==types::variable) f.var.push_back(tokens[i].str);
+                    else if(tokens[i].type==types::internal)
+                    {
+                        i++;
+                        for(;i<I;i++)
+                        {
+                            f.expr.push_back(tokens[i]);
+                            for(std::string var: f.var) if(f.expr.back().str==var) f.expr.back().type=types::number;
+                        }
+                        functions.emplace(fname,f);
+                        variables["ans"]=1.0;
+                        return variables["ans"];
+                    }
+                    else throw std::string("pallache: in function definition of ")+fname+std::string(": ")+tokens[i].str+std::string(" is not a valid variable");
+                }
+                throw std::string("pallache: error in function definition of ")+fname;
             }
             else if(tokens[0].type==types::variable and tokens.back().str=="delvar")
             {
@@ -909,8 +934,8 @@ namespace pallache
                                     f.substitute(I-i-1,x[q-i-1]);
                                     x.pop_back();
                                 }
-                                PALLACHE_DEBUG_OUT("%s",f.expr.c_str());
-                                x.push_back(parse_postfix(f.expr));
+                                for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                                x.push_back(rpncalc(f.expr));
                             }
                             else throw std::string("pallache: syntax error");
                         }
