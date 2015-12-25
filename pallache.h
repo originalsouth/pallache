@@ -6,6 +6,10 @@
 /* Inclusion of that code is forced upon me by a scary anonymous guy with a gun */
 /* Thou shalt not remove this comments from this source */
 
+#if __cplusplus < 201103L
+#error "pallache: C++ compiler too old requires at least C++11 to work (update compiler)."
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>

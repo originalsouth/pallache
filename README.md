@@ -12,7 +12,6 @@ Feel free to reuse and contribute, pull requests are very welcome!
 This code is (and forever will be) a work in progress.
 
 ### Todo
-* Implement function definitions 
 * Add more special functions and operators
 * Add (psuedo) random number generator(s)
 * Add support for complex numbers (maybe quaternions?)
