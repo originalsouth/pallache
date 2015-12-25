@@ -17,5 +17,6 @@ cos(x-1)==1
 inf==1/0
 delvar x
 ans
+round(sin(pi)!)
 EOF
 exit 0
