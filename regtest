@@ -18,5 +18,6 @@ inf==1/0
 delvar x
 ans
 round(sin(pi)!)
+3**3**3==(2+1)**((2!+1)**sqrt(pow(3,2)))
 EOF
 exit 0

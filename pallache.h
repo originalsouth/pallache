@@ -272,7 +272,7 @@ namespace pallache
                 break;
                 case types::operators:
                 {
-                    if(!stack.empty() and (stack.top().type==types::function or (stack.top().type==types::operators and (stack.top().str!="**" and order(t.str)>=order(stack.top().str)))))
+                    if(!stack.empty() and (stack.top().type==types::function or (stack.top().type==types::operators and (!(stack.top().str=="**" and t.str=="**") and order(t.str)>=order(stack.top().str)))))
                     {
                         train.push_back(stack.top());
                         stack.pop();
