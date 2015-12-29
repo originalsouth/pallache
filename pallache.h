@@ -4,6 +4,7 @@
 /* WARNING: DON'T RUN THIS PROGRAM THIS WILL DESTROY YOUR COMPUTER AND/OR HOUSE */
 /* Any copyrighted piece of code within this code is NOT mine */
 /* Inclusion of that code is forced upon me by a scary anonymous guy with a gun */
+/* website: https://github.com/originalsouth/pallache */
 /* Thou shalt not remove this comments from this source */
 
 #if __cplusplus < 201103L
@@ -978,12 +979,12 @@ namespace pallache
             #endif
             if(!newvar.empty())
             {
-                variables["ans"]=variables[newvar]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+                variables["ans"]=variables[newvar]=x[0];
                 return variables["ans"];
             }
             else if(x.size()==1)
             {
-                variables["ans"]=(std::abs(x[0])<std::numeric_limits<X>::epsilon())?0.0:x[0];
+                variables["ans"]=x[0];
                 return variables["ans"];
             }
             else throw std::string("pallache: syntax error");
