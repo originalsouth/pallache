@@ -46,7 +46,7 @@ int main(int argc,char *argv[])
                 printf("\t\t+\taddition\n");
                 printf("\t\t-\tsubstraction\n");
                 printf("\t\t*\tmultiply\n");
-                printf("\t\t/\tdevide\n");
+                printf("\t\t/\tdivide\n");
                 printf("\t\t**\texponantion\n");
                 printf("\t\t%%\tmodulus\n");
                 printf("\t\t!\tfactorial\n");
