@@ -41,7 +41,7 @@ int main(int argc,char *argv[])
             }
             else if(!strcmp(a,"help"))
             {
-                printf("Pallache: A small and simple header only math parser library (written in C++14):\n");
+                printf("pallache: A small and simple header only math parser library (written in C++14):\n");
                 printf("\tbuiltin operators:\n");
                 printf("\t\t+\taddition\n");
                 printf("\t\t-\tsubstraction\n");
@@ -63,13 +63,13 @@ int main(int argc,char *argv[])
                 printf("\t\t|\tbitwise or\n");
                 printf("\t\t^\tbitwise xor\n");
                 printf("\tbuiltin variables:\n");
-                printf("\t\tpi\t%f\n",parser["pi"]);
-                printf("\t\te\t%f\n",parser["e"]);
-                printf("\t\tphi\t%f\n",parser["phi"]);
-                printf("\t\tnan\t%f\n",parser["nan"]);
-                printf("\t\tinf\t%f\n",parser["inf"]);
-                printf("\t\tminf\t%f\n",parser["minf"]);
-                printf("\t\teps\t%f\n",parser["eps"]);
+                printf("\t\tpi\t%.17g\n",parser["pi"]);
+                printf("\t\te\t%.17g\n",parser["e"]);
+                printf("\t\tphi\t%.17g\n",parser["phi"]);
+                printf("\t\tnan\t%.17g\n",parser["nan"]);
+                printf("\t\tinf\t%.17g\n",parser["inf"]);
+                printf("\t\tminf\t%.17g\n",parser["minf"]);
+                printf("\t\teps\t%.17g\n",parser["eps"]);
                 printf("\tbuiltin functions:\n\t\t");
                 printf("cos, ");
                 printf("sin, ");
@@ -117,12 +117,12 @@ int main(int argc,char *argv[])
                 printf("kdelta, ");
                 printf("not, ");
                 printf("delvar, ");
-                printf("delfunc, ");
+                printf("delfunc ");
                 printf("\n");
             }
             else if(!strcmp(a,"about"))
             {
-                printf("Pallache: A small and simple header only math parser library (written in C++14):\n");
+                printf("pallache: A small and simple header only math parser library (written in C++14):\n");
                 printf("\t/* By BC van Zuiden -- Leiden, November 2015 */\n");
                 printf("\t/* Probably very buggy USE AT OWN RISK this will brick everything you own */\n");
                 printf("\t/* NOBODY but YOU is liable for anything that happened in result of using this */\n");
