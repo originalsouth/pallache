@@ -193,6 +193,27 @@ namespace pallache
             else if(a=="||") return 10;
             else return 10;
         }
+        bool test_digit(size_t i,const size_t aSz,std::string a,std::vector<token> &tokens)
+        {
+            if(isdigit(a[i])) return true;
+            else if(i+1<aSz)
+            {
+                if(a[i]=='.' and isdigit(a[i+1])) return true;
+                else if(a[i]=='-' and (isdigit(a[i+1]) or a[i+1]=='.') and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().str[0]=='!'))) return true;
+                else return false;
+            }
+            else return false;
+        }
+        bool test_variable(size_t i,const size_t aSz,std::string a,std::vector<token> &tokens)
+        {
+            if(isalpha(a[i])) return true;
+            else if(i+1<aSz)
+            {
+                if(a[i]=='-' and isalpha(a[i+1]) and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().str[0]=='!'))) return true;
+                else return false;
+            }
+            else return false;
+        }
         void tokenize(std::string a,std::vector<token> &tokens)
         {
             const size_t aSz=a.size();
@@ -205,13 +226,13 @@ namespace pallache
                     i++;
                     continue;
                 }
-                else if(isdigit(a[i]) or (a[i]=='-' and i+1<aSz and isdigit(a[i+1]) and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().str[0]=='!'))))
+                else if(test_digit(i,aSz,a,tokens))
                 {
                     for(;k<aSz;k++) if(!flt(a[k]) and !((a[k]=='+' or a[k]=='-') and (a[k-1]=='e' or a[k-1]=='E'))) break;
                     tokens.push_back(token(types::number,a.substr(j,k-j)));
                     i+=k-j;
                 }
-                else if(isalpha(a[i]) or (a[i]=='-' and i+1<aSz and isalpha(a[i+1]) and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().str[0]=='!'))))
+                else if(test_variable(i,aSz,a,tokens))
                 {
                     for(;k<aSz;k++) if(!isalnum(a[k]) and a[k]!='_') break;
                     std::string b=a.substr(j,k-j);

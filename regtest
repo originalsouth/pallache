@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ./pallache <<EOF
 x=1
 x
@@ -19,5 +19,12 @@ delvar x
 ans
 round(sin(pi)!)
 3**3**3==(2+1)**((2!+1)**sqrt(pow(3,2)))
+1.-.5--.5
+b=1
+b+b==2
+b-b==0
+-b+b==0
+-b--b==0
+delvar(b)
 EOF
 exit 0
