@@ -31,12 +31,12 @@ int main(int argc,char *argv[])
             }
             else if(!strcmp(a,"reset_vars"))
             {
-                parser.reset_all();
+                parser.reset_vars();
                 printf("variables table reinitialized\n");
             }
             else if(!strcmp(a,"reset_funcs"))
             {
-                parser.reset_all();
+                parser.reset_funcs();
                 printf("functions table reinitialized\n");
             }
             else if(!strcmp(a,"help"))
