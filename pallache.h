@@ -37,6 +37,12 @@
 
 namespace pallache
 {
+    template<class X> std::string to_string(X x)
+    {
+        char buffer[2048];
+        snprintf(buffer,2048,"%.17Lg",(long double)x);
+        return std::string(buffer);
+    }
     template<class X> class pallache
     {
         private:
@@ -77,7 +83,7 @@ namespace pallache
             void substitute(size_t i,X x)
             {
                 PALLACHE_DEBUG_OUT("%s",var[i].c_str());
-                for(token &t: expr) if(t.str==var[i]) t.str=std::to_string(x);
+                for(token &t: expr) if(t.str==var[i]) t.str=to_string(x);
             }
         };
         std::unordered_map<std::string,X> variables;
