@@ -461,7 +461,6 @@ namespace pallache
                             }
                         }
                         x.push_back(value);
-
                     }
                     break;
                     case types::variable:
