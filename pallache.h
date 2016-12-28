@@ -276,6 +276,16 @@ namespace pallache
             for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
             #endif
         }
+        bool test_op(token &t,std::stack<token> &stack)
+        {
+            if(stack.empty()) return false;
+            else
+            {
+                if(stack.top().type==types::function) return true;
+                else if (stack.top().type==types::operators and (!(stack.top().str=="**" and t.str=="**") and order(t.str)>=order(stack.top().str))) return true;
+                else return false;
+            }
+        }
         void shuntyard(std::vector<token> &tokens)
         {
             std::stack<token> stack;
@@ -294,7 +304,7 @@ namespace pallache
                 break;
                 case types::operators:
                 {
-                    if(!stack.empty() and (stack.top().type==types::function or (stack.top().type==types::operators and (!(stack.top().str=="**" and t.str=="**") and order(t.str)>=order(stack.top().str)))))
+                    if(test_op(t,stack))
                     {
                         train.push_back(stack.top());
                         stack.pop();
