@@ -110,13 +110,8 @@ namespace pallache
                 for(token &t: expr) if(t.str==var[i]) t.str=to_string(x);
             }
         };
-        std::unordered_map<std::string,X> variables;
         std::unordered_map<std::string,functor> functions;
-        void init_var()
-        {
-            variables.clear();
-        }
-        void init_func()
+        void init()
         {
             functions.clear();
             functions.emplace("cos",functor(true));
@@ -174,11 +169,6 @@ namespace pallache
             functions.emplace("inf",functor(true));
             functions.emplace("minf",functor(true));
             functions.emplace("eps",functor(true));
-        }
-        void init()
-        {
-            init_var();
-            init_func();
         }
         X sign(X x)
         {
