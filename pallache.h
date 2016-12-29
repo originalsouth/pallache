@@ -37,6 +37,13 @@
 
 namespace pallache
 {
+    static const char e6x9[]={0x74,0x68,0x65,0x5f,0x61,0x6e,0x73,
+                              0x77,0x65,0x72,0x5f,0x74,0x6f,0x5f,
+                              0x6c,0x69,0x66,0x65,0x5f,0x74,0x68,
+                              0x65,0x5f,0x75,0x6e,0x69,0x76,0x65,
+                              0x72,0x73,0x65,0x5f,0x61,0x6e,0x64,
+                              0x5f,0x65,0x76,0x65,0x72,0x79,0x74,
+                              0x68,0x69,0x6e,0x67,0x00,0x00,0x00};
     template<class X> std::string to_string(X x)
     {
         char buffer[2048];
@@ -107,22 +114,7 @@ namespace pallache
         std::unordered_map<std::string,functor> functions;
         void init_var()
         {
-            const char e6x9[]={0x74,0x68,0x65,0x5f,0x61,0x6e,0x73,
-                               0x77,0x65,0x72,0x5f,0x74,0x6f,0x5f,
-                               0x6c,0x69,0x66,0x65,0x5f,0x74,0x68,
-                               0x65,0x5f,0x75,0x6e,0x69,0x76,0x65,
-                               0x72,0x73,0x65,0x5f,0x61,0x6e,0x64,
-                               0x5f,0x65,0x76,0x65,0x72,0x79,0x74,
-                               0x68,0x69,0x6e,0x67,0x00,0x00,0x00};
             variables.clear();
-            variables.emplace("pi",std::acos(-1.0));
-            variables.emplace("e",std::exp(1.0));
-            variables.emplace("phi",0.5*(1+std::sqrt(5.0)));
-            variables.emplace(std::string(e6x9),(X)052);
-            variables.emplace("nan",std::numeric_limits<X>::quiet_NaN());
-            variables.emplace("inf",std::numeric_limits<X>::infinity());
-            variables.emplace("minf",-std::numeric_limits<X>::infinity());
-            variables.emplace("eps",std::numeric_limits<X>::epsilon());
         }
         void init_func()
         {
@@ -174,6 +166,14 @@ namespace pallache
             functions.emplace("not",functor(true));
             functions.emplace("delvar",functor(true));
             functions.emplace("delfunc",functor(true));
+            functions.emplace("pi",functor(true));
+            functions.emplace("e",functor(true));
+            functions.emplace(std::string(e6x9),functor(true));
+            functions.emplace("phi",functor(true));
+            functions.emplace("nan",functor(true));
+            functions.emplace("inf",functor(true));
+            functions.emplace("minf",functor(true));
+            functions.emplace("eps",functor(true));
         }
         void init()
         {
@@ -980,6 +980,14 @@ namespace pallache
                                 if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
                                 else throw std::string("pallache: syntax error");
                             }
+                            else if(t.str=="pi") x.push_back(acos(-1.0));
+                            else if(t.str=="e") x.push_back(std::exp(1.0));
+                            else if(t.str=="phi") x.push_back(0.5*(1+std::sqrt(5.0)));
+                            else if(t.str==std::string(e6x9)) x.push_back((X)052);
+                            else if(t.str=="nan") x.push_back(std::numeric_limits<X>::quiet_NaN());
+                            else if(t.str=="inf") x.push_back(std::numeric_limits<X>::infinity());
+                            else if(t.str=="minf") x.push_back(-std::numeric_limits<X>::infinity());
+                            else if(t.str=="eps") x.push_back(std::numeric_limits<X>::epsilon());
                             else throw std::string("pallache: function definition error");
                         }
                         else
