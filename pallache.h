@@ -882,7 +882,7 @@ namespace pallache
                             else if(t.str=="floor")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::ceil(x[q-1]);
+                                if(q>0) x[q-1]=std::floor(x[q-1]);
                                 else throw std::string("pallache: syntax error");
                             }
                             else if(t.str=="fmod")
