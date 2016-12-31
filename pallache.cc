@@ -140,7 +140,7 @@ int main(int argc,char *argv[])
                 }
                 catch(string errormsg)
                 {
-                    printf("%s\n",errormsg.c_str());
+                    printf("%s in expression \"%s\"\n",errormsg.c_str(),a);
                 }
             }
         }
