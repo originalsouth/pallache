@@ -252,7 +252,9 @@ namespace pallache
                 {
                     for(;k<aSz;k++) if(!isalnum(a[k]) and a[k]!='_') break;
                     std::string b=a.substr(j,k-j);
-                    const int vtype=(functions.find(b)!=functions.end())?types::function:types::variable;
+                    std::string c=b;
+                    if(c[0]=='-') c.erase(0,1);
+                    const int vtype=(functions.find(c)!=functions.end())?types::function:types::variable;
                     tokens.push_back(token(vtype,b));
                     i+=k-j;
                 }
@@ -267,7 +269,7 @@ namespace pallache
                     for(;k<aSz;k++) if(!op(a[k]) or a[k]=='-') break;
                     std::string b=a.substr(j,k-j);
                     tokens.push_back(token(types::operators,b));
-                    if(b==":=") tokens.push_back(token(types::internal,""));
+                    if(b==":=" or b=="=") tokens.push_back(token(types::internal,""));
                     i+=k-j;
                 }
                 else if(a[i]=='(')
@@ -388,7 +390,7 @@ namespace pallache
         {
             std::string newvar="";
             if(tokens.empty()) throw std::string("pallache: syntax error");
-            else if(tokens[0].type==types::variable and (tokens.back().str==":=" or tokens.back().str==":="))
+            else if(tokens[0].type==types::variable and (tokens.back().str==":=" or tokens.back().str=="="))
             {
                 functor f(false);
                 tokens.pop_back();
@@ -452,14 +454,12 @@ namespace pallache
                     break;
                     case types::variable:
                     {
-                        X p;
+                        X p=1.0;
                         if(t.str[0]=='-')
                         {
                             p=-1.0;
                             t.str.erase(0,1);
                         }
-                        else p=1.0;
-                        throw std::string("pallache: variable \"")+t.str+std::string("\" does not exist");
                     }
                     break;
                     case types::operators:
@@ -655,6 +655,12 @@ namespace pallache
                     break;
                     case types::function:
                     {
+                        X p=1.0;
+                        if(t.str[0]=='-')
+                        {
+                            p=-1.0;
+                            t.str.erase(0,1);
+                        }
                         if(functions[t.str].builtin)
                         {
                             if(t.str=="cos")
@@ -974,8 +980,11 @@ namespace pallache
                                     f.substitute(I-i-1,x[q-i-1]);
                                     x.pop_back();
                                 }
+                                #ifdef PALLACHE_DEBUG
+                                PALLACHE_DEBUG_OUT("function");
                                 for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
-                                x.push_back(rpncalc(f.expr));
+                                #endif
+                                x.push_back(p*rpncalc(f.expr));
                             }
                             else throw std::string("pallache: syntax error");
                         }
