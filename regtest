@@ -27,5 +27,5 @@ b-b==0
 -b--b==0
 delvar(b)
 EOF
-cat -n | awk '{print $1+2" "$2" "$3}'
+cat -n | awk '{$1=$1+2;print $0}'
 exit 0
