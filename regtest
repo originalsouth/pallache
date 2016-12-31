@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-./pallache <<EOF
+./pallache <<EOF |
 x=1
 x
 cos(x-1)==1
@@ -27,4 +27,5 @@ b-b==0
 -b--b==0
 delvar(b)
 EOF
+cat -n | awk '{print $1+2" "$2" "$3}'
 exit 0
