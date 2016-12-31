@@ -959,7 +959,7 @@ namespace pallache
                             else if(t.str=="inf") x.push_back(std::numeric_limits<X>::infinity());
                             else if(t.str=="minf") x.push_back(-std::numeric_limits<X>::infinity());
                             else if(t.str=="eps") x.push_back(std::numeric_limits<X>::epsilon());
-                            else if(t.str=="eps") x.push_back(ans);
+                            else if(t.str=="ans") x.push_back(ans);
                             else throw std::string("pallache: function definition error");
                         }
                         else
