@@ -110,9 +110,11 @@ namespace pallache
                 for(token &t: expr) if(t.str==var[i]) t.str=to_string(x);
             }
         };
+        X ans;
         std::unordered_map<std::string,functor> functions;
         void init()
         {
+            ans=0.0;
             functions.clear();
             functions.emplace("cos",functor(true));
             functions.emplace("sin",functor(true));
@@ -169,6 +171,7 @@ namespace pallache
             functions.emplace("inf",functor(true));
             functions.emplace("minf",functor(true));
             functions.emplace("eps",functor(true));
+            functions.emplace("ans",functor(true));
         }
         X sign(X x)
         {
@@ -385,13 +388,7 @@ namespace pallache
         {
             std::string newvar="";
             if(tokens.empty()) throw std::string("pallache: syntax error");
-            else if(tokens[0].type==types::variable and tokens.back().str=="=")
-            {
-                tokens.pop_back();
-                newvar=tokens[0].str;
-                tokens.erase(tokens.begin());
-            }
-            else if(tokens[0].type==types::variable and tokens.back().str==":=")
+            else if(tokens[0].type==types::variable and (tokens.back().str==":=" or tokens.back().str==":="))
             {
                 functor f(false);
                 tokens.pop_back();
@@ -413,35 +410,20 @@ namespace pallache
                         for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
                         try
                         {
-                            variables["ans"]=rpncalc(f.expr);
+                            ans=rpncalc(f.expr);
                         }
                         catch(std::string a)
                         {
                             functions.erase(fname);
                             throw std::string("pallache: error in function definition of ")+fname;
                         }
-                        return variables["ans"];
+                        return ans;
                     }
                     else throw std::string("pallache: in function definition of ")+fname+std::string(" ")+tokens[i].str+std::string(" is not a valid variable");
                 }
                 throw std::string("pallache: error in function definition of ")+fname;
             }
-            else if(tokens[0].type==types::variable and tokens.back().str=="delvar")
-            {
-                if(tokens.size()>2) throw std::string("pallache: syntax error");
-                else
-                {
-                    if(variables.find(tokens[0].str)!=variables.end())
-                    {
-                        X var=variables[tokens[0].str];
-                        variables.erase(tokens[0].str);
-                        variables["ans"]=var;
-                        return var;
-                    }
-                    else throw std::string("pallache: variable \"")+tokens[0].str+std::string("\" does not exist");
-                }
-            }
-            else if(tokens[0].type==types::function and tokens.back().str=="delfunc")
+            else if(tokens[0].type==types::function and (tokens.back().str=="delfunc" or tokens.back().str=="delvar"))
             {
                 if(tokens.size()>2) throw std::string("pallache: syntax error");
                 else
@@ -451,7 +433,7 @@ namespace pallache
                         if(!functions[tokens[0].str].builtin)
                         {
                             functions.erase(tokens[0].str);
-                            return variables["ans"];
+                            return ans;
                         }
                         else throw std::string("pallache: function \"")+tokens[0].str+std::string("\" is builtin");
                     }
@@ -477,8 +459,7 @@ namespace pallache
                             t.str.erase(0,1);
                         }
                         else p=1.0;
-                        if(variables.find(t.str)!=variables.end()) x.push_back(p*variables[t.str]);
-                        else throw std::string("pallache: variable \"")+t.str+std::string("\" does not exist");
+                        throw std::string("pallache: variable \"")+t.str+std::string("\" does not exist");
                     }
                     break;
                     case types::operators:
@@ -978,6 +959,7 @@ namespace pallache
                             else if(t.str=="inf") x.push_back(std::numeric_limits<X>::infinity());
                             else if(t.str=="minf") x.push_back(-std::numeric_limits<X>::infinity());
                             else if(t.str=="eps") x.push_back(std::numeric_limits<X>::epsilon());
+                            else if(t.str=="eps") x.push_back(ans);
                             else throw std::string("pallache: function definition error");
                         }
                         else
@@ -1010,15 +992,10 @@ namespace pallache
             PALLACHE_DEBUG_OUT("values");
             for(X f: x) PALLACHE_DEBUG_OUT("%f",f);
             #endif
-            if(!newvar.empty())
+            if(x.size()==1)
             {
-                variables["ans"]=variables[newvar]=x[0];
-                return variables["ans"];
-            }
-            else if(x.size()==1)
-            {
-                variables["ans"]=x[0];
-                return variables["ans"];
+                ans=x[0];
+                return ans;
             }
             else throw std::string("pallache: syntax error");
         }
@@ -1050,7 +1027,7 @@ namespace pallache
         }
         bool var(std::string a)
         {
-            return (variables.find(a)!=variables.end());
+            return (functions.find(a)!=functions.end());
         }
         bool func(std::string a)
         {
@@ -1058,7 +1035,7 @@ namespace pallache
         }
         void var(std::string a,X x)
         {
-            variables[a]=x;
+            function[a]=to_string(x);
         }
         void func(std::string a,std::string b)
         {
@@ -1066,7 +1043,7 @@ namespace pallache
         }
         void del_var(std::string a)
         {
-            variables.erase(a);
+            functions.erase(a);
         }
         void del_func(std::string a)
         {
@@ -1074,11 +1051,11 @@ namespace pallache
         }
         void reset_vars()
         {
-            init_var();
+            init();
         }
         void reset_funcs()
         {
-            init_func();
+            init();
         }
         void reset_all()
         {
