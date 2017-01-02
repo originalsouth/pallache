@@ -305,7 +305,12 @@ namespace pallache
             else
             {
                 if(stack.top().type==types::function) return true;
-                else if (stack.top().type==types::operators and (!(stack.top().str=="**" and t.str=="**") and order(t.str)>=order(stack.top().str))) return true;
+                else if(stack.top().type==types::operators)
+                {
+                    if(stack.top().str=="**" and t.str=="**") return false;
+                    else if (order(t.str)>=order(stack.top().str)) return true;
+                    else return false;
+                }
                 else return false;
             }
         }
@@ -327,7 +332,7 @@ namespace pallache
                 break;
                 case types::operators:
                 {
-                    if(test_op(t,stack))
+                    while(test_op(t,stack))
                     {
                         train.push_back(stack.top());
                         stack.pop();
