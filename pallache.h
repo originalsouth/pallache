@@ -380,7 +380,7 @@ namespace pallache
                 break;
                 default:
                 {
-                    throw std::string("pallache: syntax error");
+                    throw std::string("pallache: unknown types in syntax");
                 }
                 break;
             }
