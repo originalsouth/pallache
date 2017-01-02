@@ -397,7 +397,7 @@ namespace pallache
             else if(tokens.back().str==":=" or tokens.back().str=="=" or tokens.back().str=="=:" or tokens.back().str=="::")
             {
                 const size_t I=tokens.size();
-                bool stat=tokens.back().str.size()>1 and tokens.back().str[1]==':';
+                bool stat=(tokens.back().str.size()>1 and tokens.back().str[1]==':');
                 functor f(false,tokens.back().str[0]==':'?true:false);
                 tokens.pop_back();
                 std::string fname;
@@ -439,7 +439,7 @@ namespace pallache
                     functions.erase(fname);
                     throw std::string("pallache: error in function definition of \"")+fname+std::string("\" as a \"")+a+std::string("\" occured");
                 }
-                if(f.dim()==1 and stat)
+                if(f.dim()==0 and stat)
                 {
                     functions[fname].expr.clear();
                     functions[fname].expr.push_back(token(types::number,to_string(ans)));
