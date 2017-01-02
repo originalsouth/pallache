@@ -13,7 +13,7 @@ This code is (and forever will be) a work in progress.
 
 Pallache is uses to shunting yard alogrithm to evaluate mathematical expressions.
 It allows users to define scalar functions of arbitrary dimensions (zero being a variable).
-Variables can be made static or dynamic meaning the change or remain when defined by another (changing) variable.
+Functions can be made static or dynamic meaning the change or remain when defined by another (changing) variable.
 
 ### Todo
 * Add more (special) functions and operators
