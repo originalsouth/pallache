@@ -252,11 +252,8 @@ namespace pallache
                 {
                     for(;k<aSz;k++) if(!isalnum(a[k]) and a[k]!='_') break;
                     std::string b=a.substr(j,k-j);
-                    std::string c=b;
-                    if(c[0]=='-') c.erase(0,1);
-                    const int vtype=(functions.find(c)!=functions.end())?types::function:types::variable;
-                    tokens.push_back(token(vtype,b));
                     i+=k-j;
+                    tokens.push_back(token(types::variable,b));
                 }
                 else if(a[i]=='!')
                 {
@@ -269,7 +266,7 @@ namespace pallache
                     for(;k<aSz;k++) if(!op(a[k]) or a[k]=='-') break;
                     std::string b=a.substr(j,k-j);
                     tokens.push_back(token(types::operators,b));
-                    if(b==":=" or b=="=") tokens.push_back(token(types::internal,""));
+                    if(b==":=" or b=="=") tokens.push_back(token(types::internal,"internal"));
                     i+=k-j;
                 }
                 else if(a[i]=='(')
@@ -289,6 +286,8 @@ namespace pallache
                 }
                 else throw std::string("pallache: unknown token \"")+a[i]+std::string("\"");
             }
+            const size_t tSz=tokens.size();
+            for(size_t i=0;i<tSz-1;i++) if(tokens[i].type==types::variable and tokens[i+1].type==types::bracket_open) tokens[i].type=types::function;
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("tokens");
             for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
@@ -460,6 +459,21 @@ namespace pallache
                             p=-1.0;
                             t.str.erase(0,1);
                         }
+                        if(t.str=="pi") x.push_back(p*acos(-1.0));
+                        else if(t.str=="e") x.push_back(p*std::exp(1.0));
+                        else if(t.str=="phi") x.push_back(p*0.5*(1+std::sqrt(5.0)));
+                        else if(t.str==std::string(e6x9)) x.push_back(p*(X)052);
+                        else if(t.str=="nan") x.push_back(p*std::numeric_limits<X>::quiet_NaN());
+                        else if(t.str=="inf") x.push_back(p*std::numeric_limits<X>::infinity());
+                        else if(t.str=="minf") x.push_back(-p*std::numeric_limits<X>::infinity());
+                        else if(t.str=="eps") x.push_back(p*std::numeric_limits<X>::epsilon());
+                        else if(t.str=="ans") x.push_back(p*ans);
+                        else if(functions.find(t.str)!=functions.end())
+                        p*{
+                            functor f=functions[t.str];
+                            x.push_back(p*rpncalc(f.expr));
+                        }
+                        else throw std::string("pallache: variable \"")+t.str+std::string("\" does not exist");
                     }
                     break;
                     case types::operators:
@@ -957,15 +971,6 @@ namespace pallache
                                 if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
                                 else throw std::string("pallache: syntax error");
                             }
-                            else if(t.str=="pi") x.push_back(acos(-1.0));
-                            else if(t.str=="e") x.push_back(std::exp(1.0));
-                            else if(t.str=="phi") x.push_back(0.5*(1+std::sqrt(5.0)));
-                            else if(t.str==std::string(e6x9)) x.push_back((X)052);
-                            else if(t.str=="nan") x.push_back(std::numeric_limits<X>::quiet_NaN());
-                            else if(t.str=="inf") x.push_back(std::numeric_limits<X>::infinity());
-                            else if(t.str=="minf") x.push_back(-std::numeric_limits<X>::infinity());
-                            else if(t.str=="eps") x.push_back(std::numeric_limits<X>::epsilon());
-                            else if(t.str=="ans") x.push_back(ans);
                             else throw std::string("pallache: function definition error");
                         }
                         else
@@ -1040,7 +1045,7 @@ namespace pallache
         }
         bool func(std::string a)
         {
-            return (function.find(a)!=function.end());
+            return (functions.find(a)!=functions.end());
         }
         void var(std::string a,X x)
         {
