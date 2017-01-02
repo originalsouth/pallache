@@ -469,7 +469,7 @@ namespace pallache
                         else if(t.str=="eps") x.push_back(p*std::numeric_limits<X>::epsilon());
                         else if(t.str=="ans") x.push_back(p*ans);
                         else if(functions.find(t.str)!=functions.end())
-                        p*{
+                        {
                             functor f=functions[t.str];
                             x.push_back(p*rpncalc(f.expr));
                         }
