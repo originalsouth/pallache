@@ -408,7 +408,7 @@ namespace pallache
                     if(i>1) for(size_t j=0;j<i-1;j++)
                     {
                         if(tokens[j].type==types::variable) f.var.push_back(tokens[j].str);
-                        else throw std::string("pallache: function \"")+fname+std::string("\" can only have variables as arguments \"")+tokens[i].str+std::string("\" is not a variable");
+                        else throw std::string("pallache: function \"")+fname+std::string("\" can only have variables as arguments");
                     }
                     break;
                 }
@@ -448,7 +448,7 @@ namespace pallache
             }
             else if((tokens[0].type==types::variable or tokens[0].type==types::function) and (tokens.back().str=="delvar" or tokens.back().str=="delfunc" or tokens.back().str=="-delvar" or tokens.back().str=="-delfunc"))
             {
-                if(tokens.size()>2) throw std::string("pallache: syntax error");
+                if(tokens.size()>2) throw std::string("pallache: syntax error \"")+tokens.back().str+std::string("\" only takes one argument");
                 else
                 {
                     if(functions.find(tokens[0].str)!=functions.end())
@@ -458,9 +458,9 @@ namespace pallache
                             functions.erase(tokens[0].str);
                             return tokens.back().str[0]!='-'?ans:-ans;
                         }
-                        else throw std::string("pallache: function \"")+tokens[0].str+std::string("\" is builtin");
+                        else throw std::string("pallache: cannot delete \"")+tokens[0].str+std::string("\" because it is builtin");
                     }
-                    else throw std::string("pallache: function \"")+tokens[0].str+std::string("\" does not exist");
+                    else throw std::string("pallache: cannot delete \"")+tokens[0].str+std::string("\" because it does not exist");
                 }
             }
             std::vector<X> x;
@@ -508,7 +508,7 @@ namespace pallache
                                 x[q-2]+=x[q-1];
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"+\" requires two arguments");
                         }
                         else if(t.str=="-")
                         {
@@ -518,7 +518,7 @@ namespace pallache
                                 x[q-2]-=x[q-1];
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"-\" requires two arguments");
                         }
                         else if(t.str=="*")
                         {
@@ -528,7 +528,7 @@ namespace pallache
                                 x[q-2]*=x[q-1];
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"*\" requires two arguments");
                         }
                         else if(t.str=="/")
                         {
@@ -538,7 +538,7 @@ namespace pallache
                                 x[q-2]/=x[q-1];
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"/\" requires two arguments");
                         }
                         else if(t.str=="%")
                         {
@@ -548,7 +548,7 @@ namespace pallache
                                 x[q-2]=fmod(x[q-2],x[q-1]);
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"%\" requires two arguments");
                         }
                         else if(t.str=="**")
                         {
@@ -558,13 +558,13 @@ namespace pallache
                                 x[q-2]=pow(x[q-2],x[q-1]);
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"**\" requires two arguments");
                         }
                         else if(t.str=="!")
                         {
                             const size_t q=x.size();
                             if(q>0) x[q-1]=std::tgamma(x[q-1]+1.0);
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"!\" requires one argument");
                         }
                         else if(t.str=="&&")
                         {
@@ -574,7 +574,7 @@ namespace pallache
                                 x[q-2]=(X)((bool)(x[q-2]) and (bool)(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"&&\" requires two arguments");
                         }
                         else if(t.str=="||")
                         {
@@ -584,7 +584,7 @@ namespace pallache
                                 x[q-2]=(X)((bool)(x[q-2]) or (bool)(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"||\" requires two arguments");
                         }
                         else if(t.str=="^^")
                         {
@@ -594,7 +594,7 @@ namespace pallache
                                 x[q-2]=(X)((bool)(x[q-2]) xor (bool)(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"^^\" requires two arguments");
                         }
                         else if(t.str=="==")
                         {
@@ -604,7 +604,7 @@ namespace pallache
                                 x[q-2]=(X)((x[q-2])==(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"==\" requires two arguments");
                         }
                         else if(t.str=="!=")
                         {
@@ -614,7 +614,7 @@ namespace pallache
                                 x[q-2]=(X)((x[q-2])!=(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"!=\" requires two arguments");
                         }
                         else if(t.str=="<")
                         {
@@ -624,7 +624,7 @@ namespace pallache
                                 x[q-2]=(X)((x[q-2])<(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"<\" requires two arguments");
                         }
                         else if(t.str==">")
                         {
@@ -634,7 +634,7 @@ namespace pallache
                                 x[q-2]=(X)((x[q-2])>(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \">\" requires two arguments");
                         }
                         else if(t.str=="<=")
                         {
@@ -644,7 +644,7 @@ namespace pallache
                                 x[q-2]=(X)((x[q-2])<=(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"<=\" requires two arguments");
                         }
                         else if(t.str==">=")
                         {
@@ -654,7 +654,7 @@ namespace pallache
                                 x[q-2]=(X)((x[q-2])>=(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \">=\" requires two arguments");
                         }
                         else if(t.str=="&")
                         {
@@ -664,7 +664,7 @@ namespace pallache
                                 x[q-2]=(X)((long int)(x[q-2])&(long int)(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"&\" requires two arguments");
                         }
                         else if(t.str=="|")
                         {
@@ -674,7 +674,7 @@ namespace pallache
                                 x[q-2]=(X)((long int)(x[q-2])|(long int)(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"|\" requires two arguments");
                         }
                         else if(t.str=="^")
                         {
@@ -684,9 +684,9 @@ namespace pallache
                                 x[q-2]=(X)((long int)(x[q-2])^(long int)(x[q-1]));
                                 x.pop_back();
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: syntax error operator \"^\" requires two arguments");
                         }
-                        else throw std::string("pallache: invalid operator \"")+t.str+std::string("\"");
+                        else throw std::string("pallache: operator \"")+t.str+std::string("\" is not defined");
                     }
                     break;
                     case types::function:
@@ -703,37 +703,37 @@ namespace pallache
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::cos(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sin")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::sin(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="tan")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::tan(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="acos")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::acos(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="asin")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::asin(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="atan")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::atan(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="atan2")
                             {
@@ -743,97 +743,97 @@ namespace pallache
                                     x[q-2]=std::atan2(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else if(t.str=="cosh")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::cosh(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sinh")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::sinh(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="tanh")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::tanh(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="acosh")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::acosh(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="asinh")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::asinh(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="atanh")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::atanh(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="exp")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::exp(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::log(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log10")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::log10(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="exp2")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::exp2(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="expm1")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::expm1(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="ilogb")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::ilogb(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log1p")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::log1p(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log2")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::log2(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="logb")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::logb(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="pow")
                             {
@@ -843,19 +843,19 @@ namespace pallache
                                     x[q-2]=std::pow(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sqrt")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::sqrt(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="cbrt")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::cbrt(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="hypot")
                             {
@@ -865,43 +865,43 @@ namespace pallache
                                     x[q-2]=std::hypot(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else if(t.str=="erf")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::erf(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="erfc")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::erfc(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="tgamma")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::tgamma(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="lgamma")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::lgamma(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="ceil")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::ceil(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="floor")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::floor(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="fmod")
                             {
@@ -911,31 +911,31 @@ namespace pallache
                                     x[q-2]=std::fmod(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else if(t.str=="trunc")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::trunc(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="round")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::round(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="rint")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::nearbyint(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="nearbyint")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::nearbyint(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="remainder")
                             {
@@ -945,37 +945,37 @@ namespace pallache
                                     x[q-2]=std::remainder(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else if(t.str=="abs")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=std::abs(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sign")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=sign(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sgn")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=sign(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="bool")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=(X)(bool)(x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="delta")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=x[q-1]==0.0?std::numeric_limits<X>::infinity():0.0;
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="kdelta")
                             {
@@ -985,15 +985,15 @@ namespace pallache
                                     x[q-2]=(X)(x[q-2]==x[q-1]);
                                     x.pop_back();
                                 }
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else if(t.str=="not")
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
-                                else throw std::string("pallache: syntax error");
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
-                            else throw std::string("pallache: function definition error");
+                            else throw std::string("pallache: error builtin function \"")+t.str+std::string("\" seems not to be defined");
                         }
                         else
                         {
@@ -1013,13 +1013,13 @@ namespace pallache
                                 #endif
                                 x.push_back(p*rpncalc(f.expr));
                             }
-                            else throw std::string("pallache: syntax error");
+                            else throw std::string("pallache: the custom defined function \"")+t.str+std::string("\" has dimensionality ")+to_string(functions[t.str].dim());
                         }
                     }
                     break;
                     default:
                     {
-                        throw std::string("pallache: syntax error");
+                        throw std::string("pallache: the token \"")+t.str+std::string("\" is unknown");
                     }
                     break;
                 }
