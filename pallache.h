@@ -94,11 +94,13 @@ namespace pallache
         struct functor
         {
             bool builtin;
+            bool protect;
             std::vector<std::string> var;
             std::vector<token> expr;
-            functor(bool p=false)
+            functor(bool b=false,bool p=false)
             {
-                builtin=p;
+                builtin=b;
+                protect=p;
             }
             size_t dim()
             {
@@ -116,62 +118,62 @@ namespace pallache
         {
             ans=0.0;
             functions.clear();
-            functions.emplace("cos",functor(true));
-            functions.emplace("sin",functor(true));
-            functions.emplace("tan",functor(true));
-            functions.emplace("acos",functor(true));
-            functions.emplace("asin",functor(true));
-            functions.emplace("atan",functor(true));
-            functions.emplace("atan2",functor(true));
-            functions.emplace("cosh",functor(true));
-            functions.emplace("sinh",functor(true));
-            functions.emplace("tanh",functor(true));
-            functions.emplace("acosh",functor(true));
-            functions.emplace("asinh",functor(true));
-            functions.emplace("atanh",functor(true));
-            functions.emplace("exp",functor(true));
-            functions.emplace("log",functor(true));
-            functions.emplace("log10",functor(true));
-            functions.emplace("exp2",functor(true));
-            functions.emplace("expm1",functor(true));
-            functions.emplace("ilogb",functor(true));
-            functions.emplace("log1p",functor(true));
-            functions.emplace("log2",functor(true));
-            functions.emplace("logb",functor(true));
-            functions.emplace("pow",functor(true));
-            functions.emplace("sqrt",functor(true));
-            functions.emplace("cbrt",functor(true));
-            functions.emplace("hypot",functor(true));
-            functions.emplace("erf",functor(true));
-            functions.emplace("erfc",functor(true));
-            functions.emplace("tgamma",functor(true));
-            functions.emplace("lgamma",functor(true));
-            functions.emplace("ceil",functor(true));
-            functions.emplace("floor",functor(true));
-            functions.emplace("fmod",functor(true));
-            functions.emplace("trunc",functor(true));
-            functions.emplace("round",functor(true));
-            functions.emplace("rint",functor(true));
-            functions.emplace("nearbyint",functor(true));
-            functions.emplace("remainder",functor(true));
-            functions.emplace("abs",functor(true));
-            functions.emplace("sign",functor(true));
-            functions.emplace("sgn",functor(true));
-            functions.emplace("bool",functor(true));
-            functions.emplace("delta",functor(true));
-            functions.emplace("kdelta",functor(true));
-            functions.emplace("not",functor(true));
-            functions.emplace("delvar",functor(true));
-            functions.emplace("delfunc",functor(true));
-            functions.emplace("pi",functor(true));
-            functions.emplace("e",functor(true));
-            functions.emplace(std::string(e6x9),functor(true));
-            functions.emplace("phi",functor(true));
-            functions.emplace("nan",functor(true));
-            functions.emplace("inf",functor(true));
-            functions.emplace("minf",functor(true));
-            functions.emplace("eps",functor(true));
-            functions.emplace("ans",functor(true));
+            functions.emplace("cos",functor(true,true));
+            functions.emplace("sin",functor(true,true));
+            functions.emplace("tan",functor(true,true));
+            functions.emplace("acos",functor(true,true));
+            functions.emplace("asin",functor(true,true));
+            functions.emplace("atan",functor(true,true));
+            functions.emplace("atan2",functor(true,true));
+            functions.emplace("cosh",functor(true,true));
+            functions.emplace("sinh",functor(true,true));
+            functions.emplace("tanh",functor(true,true));
+            functions.emplace("acosh",functor(true,true));
+            functions.emplace("asinh",functor(true,true));
+            functions.emplace("atanh",functor(true,true));
+            functions.emplace("exp",functor(true,true));
+            functions.emplace("log",functor(true,true));
+            functions.emplace("log10",functor(true,true));
+            functions.emplace("exp2",functor(true,true));
+            functions.emplace("expm1",functor(true,true));
+            functions.emplace("ilogb",functor(true,true));
+            functions.emplace("log1p",functor(true,true));
+            functions.emplace("log2",functor(true,true));
+            functions.emplace("logb",functor(true,true));
+            functions.emplace("pow",functor(true,true));
+            functions.emplace("sqrt",functor(true,true));
+            functions.emplace("cbrt",functor(true,true));
+            functions.emplace("hypot",functor(true,true));
+            functions.emplace("erf",functor(true,true));
+            functions.emplace("erfc",functor(true,true));
+            functions.emplace("tgamma",functor(true,true));
+            functions.emplace("lgamma",functor(true,true));
+            functions.emplace("ceil",functor(true,true));
+            functions.emplace("floor",functor(true,true));
+            functions.emplace("fmod",functor(true,true));
+            functions.emplace("trunc",functor(true,true));
+            functions.emplace("round",functor(true,true));
+            functions.emplace("rint",functor(true,true));
+            functions.emplace("nearbyint",functor(true,true));
+            functions.emplace("remainder",functor(true,true));
+            functions.emplace("abs",functor(true,true));
+            functions.emplace("sign",functor(true,true));
+            functions.emplace("sgn",functor(true,true));
+            functions.emplace("bool",functor(true,true));
+            functions.emplace("delta",functor(true,true));
+            functions.emplace("kdelta",functor(true,true));
+            functions.emplace("not",functor(true,true));
+            functions.emplace("delvar",functor(true,true));
+            functions.emplace("delfunc",functor(true,true));
+            functions.emplace("pi",functor(true,true));
+            functions.emplace("e",functor(true,true));
+            functions.emplace(std::string(e6x9),functor(true,true));
+            functions.emplace("phi",functor(true,true));
+            functions.emplace("nan",functor(true,true));
+            functions.emplace("inf",functor(true,true));
+            functions.emplace("minf",functor(true,true));
+            functions.emplace("eps",functor(true,true));
+            functions.emplace("ans",functor(true,true));
         }
         X sign(X x)
         {
@@ -266,7 +268,6 @@ namespace pallache
                     for(;k<aSz;k++) if(!op(a[k]) or a[k]=='-') break;
                     std::string b=a.substr(j,k-j);
                     tokens.push_back(token(types::operators,b));
-                    if(b==":=" or b=="=") tokens.push_back(token(types::internal,"internal"));
                     i+=k-j;
                 }
                 else if(a[i]=='(')
@@ -389,17 +390,23 @@ namespace pallache
         {
             std::string newvar="";
             if(tokens.empty()) throw std::string("pallache: syntax error");
-            else if(tokens[0].type==types::variable and (tokens.back().str==":=" or tokens.back().str=="="))
+            else if(tokens.back().str==":=" or tokens.back().str=="=" or tokens.back().str=="=:" or tokens.back().str=="::")
             {
-                functor f(false);
+                functor f(false,tokens.back().str[0]==':'?true:false);
                 tokens.pop_back();
-                std::string fname=tokens[0].str;
+                std::string fname;
                 const size_t I=tokens.size();
-                for(size_t i=1;i<I;i++)
+                for(size_t i=0;i<I;i++)
                 {
                     if(tokens[i].type==types::variable) f.var.push_back(tokens[i].str);
-                    else if(tokens[i].type==types::internal)
+                    else if(tokens[i].type==types::function)
                     {
+                        fname=tokens[i].str;
+                        if(functions.find(fname)!=functions.end())
+                        {
+                            if(functions[fname].protect) throw std::string("pallache: function \"")+fname+std::string("\" is protected delete it first");
+                            else functions.erase(fname);
+                        }
                         i++;
                         for(;i<I;i++)
                         {
@@ -412,6 +419,11 @@ namespace pallache
                         try
                         {
                             ans=rpncalc(f.expr);
+                            if(f.dim()==1 and tokens.back().str.size()>1 and tokens.back().str[1]==':')
+                            {
+                                f.expr.clear();
+                                f.expr.push_back(token(types::number,to_string(ans)));
+                            }
                         }
                         catch(std::string a)
                         {
