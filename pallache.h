@@ -702,37 +702,37 @@ namespace pallache
                             if(t.str=="cos")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::cos(x[q-1]);
+                                if(q>0) x[q-1]=p*std::cos(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sin")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::sin(x[q-1]);
+                                if(q>0) x[q-1]=p*std::sin(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="tan")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::tan(x[q-1]);
+                                if(q>0) x[q-1]=p*std::tan(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="acos")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::acos(x[q-1]);
+                                if(q>0) x[q-1]=p*std::acos(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="asin")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::asin(x[q-1]);
+                                if(q>0) x[q-1]=p*std::asin(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="atan")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::atan(x[q-1]);
+                                if(q>0) x[q-1]=p*std::atan(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="atan2")
@@ -740,7 +740,7 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=std::atan2(x[q-2],x[q-1]);
+                                    x[q-2]=p*std::atan2(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
@@ -748,91 +748,91 @@ namespace pallache
                             else if(t.str=="cosh")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::cosh(x[q-1]);
+                                if(q>0) x[q-1]=p*std::cosh(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sinh")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::sinh(x[q-1]);
+                                if(q>0) x[q-1]=p*std::sinh(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="tanh")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::tanh(x[q-1]);
+                                if(q>0) x[q-1]=p*std::tanh(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="acosh")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::acosh(x[q-1]);
+                                if(q>0) x[q-1]=p*std::acosh(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="asinh")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::asinh(x[q-1]);
+                                if(q>0) x[q-1]=p*std::asinh(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="atanh")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::atanh(x[q-1]);
+                                if(q>0) x[q-1]=p*std::atanh(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="exp")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::exp(x[q-1]);
+                                if(q>0) x[q-1]=p*std::exp(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::log(x[q-1]);
+                                if(q>0) x[q-1]=p*std::log(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log10")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::log10(x[q-1]);
+                                if(q>0) x[q-1]=p*std::log10(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="exp2")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::exp2(x[q-1]);
+                                if(q>0) x[q-1]=p*std::exp2(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="expm1")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::expm1(x[q-1]);
+                                if(q>0) x[q-1]=p*std::expm1(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="ilogb")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::ilogb(x[q-1]);
+                                if(q>0) x[q-1]=p*std::ilogb(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log1p")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::log1p(x[q-1]);
+                                if(q>0) x[q-1]=p*std::log1p(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="log2")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::log2(x[q-1]);
+                                if(q>0) x[q-1]=p*std::log2(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="logb")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::logb(x[q-1]);
+                                if(q>0) x[q-1]=p*std::logb(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="pow")
@@ -840,7 +840,7 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=std::pow(x[q-2],x[q-1]);
+                                    x[q-2]=p*std::pow(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
@@ -848,13 +848,13 @@ namespace pallache
                             else if(t.str=="sqrt")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::sqrt(x[q-1]);
+                                if(q>0) x[q-1]=p*std::sqrt(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="cbrt")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::cbrt(x[q-1]);
+                                if(q>0) x[q-1]=p*std::cbrt(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="hypot")
@@ -862,7 +862,7 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=std::hypot(x[q-2],x[q-1]);
+                                    x[q-2]=p*std::hypot(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
@@ -870,37 +870,37 @@ namespace pallache
                             else if(t.str=="erf")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::erf(x[q-1]);
+                                if(q>0) x[q-1]=p*std::erf(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="erfc")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::erfc(x[q-1]);
+                                if(q>0) x[q-1]=p*std::erfc(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="tgamma")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::tgamma(x[q-1]);
+                                if(q>0) x[q-1]=p*std::tgamma(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="lgamma")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::lgamma(x[q-1]);
+                                if(q>0) x[q-1]=p*std::lgamma(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="ceil")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::ceil(x[q-1]);
+                                if(q>0) x[q-1]=p*std::ceil(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="floor")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::floor(x[q-1]);
+                                if(q>0) x[q-1]=p*std::floor(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="fmod")
@@ -908,7 +908,7 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=std::fmod(x[q-2],x[q-1]);
+                                    x[q-2]=p*std::fmod(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
@@ -916,25 +916,25 @@ namespace pallache
                             else if(t.str=="trunc")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::trunc(x[q-1]);
+                                if(q>0) x[q-1]=p*std::trunc(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="round")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::round(x[q-1]);
+                                if(q>0) x[q-1]=p*std::round(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="rint")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::nearbyint(x[q-1]);
+                                if(q>0) x[q-1]=p*std::nearbyint(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="nearbyint")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::nearbyint(x[q-1]);
+                                if(q>0) x[q-1]=p*std::nearbyint(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="remainder")
@@ -942,7 +942,7 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=std::remainder(x[q-2],x[q-1]);
+                                    x[q-2]=p*std::remainder(x[q-2],x[q-1]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
@@ -950,31 +950,31 @@ namespace pallache
                             else if(t.str=="abs")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=std::abs(x[q-1]);
+                                if(q>0) x[q-1]=p*std::abs(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sign")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=sign(x[q-1]);
+                                if(q>0) x[q-1]=p*sign(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="sgn")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=sign(x[q-1]);
+                                if(q>0) x[q-1]=p*sign(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="bool")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=(X)(bool)(x[q-1]);
+                                if(q>0) x[q-1]=p*(X)(bool)(x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="delta")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=x[q-1]==0.0?std::numeric_limits<X>::infinity():0.0;
+                                if(q>0) x[q-1]=p*(x[q-1]==0.0?std::numeric_limits<X>::infinity():0.0);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="kdelta")
@@ -982,7 +982,7 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=(X)(x[q-2]==x[q-1]);
+                                    x[q-2]=(X)p*(x[q-2]==x[q-1]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
@@ -990,7 +990,7 @@ namespace pallache
                             else if(t.str=="not")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=(X)(!(bool)x[q-1]);
+                                if(q>0) x[q-1]=(X)p*(!(bool)x[q-1]);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else throw std::string("pallache: error builtin function \"")+t.str+std::string("\" seems not to be defined");
