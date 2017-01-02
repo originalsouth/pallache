@@ -449,6 +449,19 @@ namespace pallache
                     functions[fname].expr.clear();
                     functions[fname].expr.push_back(token(types::number,to_string(ans)));
                 }
+                else if(stat)
+                {
+                    bool cont;
+                    for(token &t: functions[fname].expr) if(t.type==types::variable)
+                    {
+                        cont=false;
+                        for(std::string var: functions[fname].var) if(t.str==var) cont=true;
+                        if(cont) continue;
+                        std::vector<token> expr;
+                        expr.push_back(t);
+                        t=token(types::number,to_string(rpncalc(expr)));
+                    }
+                }
                 return ans;
             }
             else if((tokens[0].type==types::variable or tokens[0].type==types::function) and (tokens.back().str=="delvar" or tokens.back().str=="delfunc" or tokens.back().str=="-delvar" or tokens.back().str=="-delfunc"))
@@ -1068,7 +1081,7 @@ namespace pallache
         }
         bool var(std::string a)
         {
-            return (functions.find(a)!=functions.end());
+            return (functions.find(a)!=functions.end() and !functions[a].dim());
         }
         bool func(std::string a)
         {
@@ -1076,19 +1089,19 @@ namespace pallache
         }
         void var(std::string a,X x)
         {
-            function[a]=to_string(x);
+            parse_infix(a+std::string("=")+to_string(x));
         }
         void func(std::string a,std::string b)
         {
-            function[a]=b;
+            parse_infix(a+std::string("=")+b);
         }
         void del_var(std::string a)
         {
-            functions.erase(a);
+            if(var(a)) functions.erase(a);
         }
         void del_func(std::string a)
         {
-            function.erase(a);
+            if(func(a)) functions.erase(a);
         }
         void reset_vars()
         {
