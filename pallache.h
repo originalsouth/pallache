@@ -424,7 +424,7 @@ namespace pallache
                 }
                 throw std::string("pallache: error in function definition of ")+fname;
             }
-            else if(tokens[0].type==types::function and (tokens.back().str=="delfunc" or tokens.back().str=="delvar"))
+            else if((tokens[0].type==types::variable or tokens[0].type==types::function) and (tokens.back().str=="delvar" or tokens.back().str=="delfunc" or tokens.back().str=="-delvar" or tokens.back().str=="-delfunc"))
             {
                 if(tokens.size()>2) throw std::string("pallache: syntax error");
                 else
@@ -434,7 +434,7 @@ namespace pallache
                         if(!functions[tokens[0].str].builtin)
                         {
                             functions.erase(tokens[0].str);
-                            return ans;
+                            return tokens.back().str[0]!='-'?ans:-ans;
                         }
                         else throw std::string("pallache: function \"")+tokens[0].str+std::string("\" is builtin");
                     }
