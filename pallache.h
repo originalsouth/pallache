@@ -108,8 +108,12 @@ namespace pallache
             }
             void substitute(size_t i,X x)
             {
-                PALLACHE_DEBUG_OUT("%s",var[i].c_str());
-                for(token &t: expr) if(t.str==var[i]) t.str=to_string(x);
+                PALLACHE_DEBUG_OUT("%s = %.17Lg",var[i].c_str(),(long double)x);
+                for(token &t: expr) if(t.str==var[i])
+                {
+                    t.type=types::number;
+                    t.str=to_string(x);
+                }
             }
         };
         X ans;
@@ -268,6 +272,7 @@ namespace pallache
                     for(;k<aSz;k++) if(!op(a[k]) or a[k]=='-') break;
                     std::string b=a.substr(j,k-j);
                     tokens.push_back(token(types::operators,b));
+                    if(b==":=" or b=="=" or b=="=:" or b=="::") tokens.push_back(token(types::internal,"internal"));
                     i+=k-j;
                 }
                 else if(a[i]=='(')
@@ -388,53 +393,58 @@ namespace pallache
         }
         X rpncalc(std::vector<token> &tokens)
         {
-            std::string newvar="";
             if(tokens.empty()) throw std::string("pallache: syntax error");
             else if(tokens.back().str==":=" or tokens.back().str=="=" or tokens.back().str=="=:" or tokens.back().str=="::")
             {
+                const size_t I=tokens.size();
+                bool stat=tokens.back().str.size()>1 and tokens.back().str[1]==':';
                 functor f(false,tokens.back().str[0]==':'?true:false);
                 tokens.pop_back();
                 std::string fname;
-                const size_t I=tokens.size();
-                for(size_t i=0;i<I;i++)
+                for(size_t i=0;i<I;i++) if(tokens[i].type==types::internal)
                 {
-                    if(tokens[i].type==types::variable) f.var.push_back(tokens[i].str);
-                    else if(tokens[i].type==types::function)
+                    fname=tokens[i-1].str;
+                    f.expr=std::vector<token>(&tokens[i+1],&tokens[I-1]);
+                    if(i>1) for(size_t j=0;j<i-1;j++)
                     {
-                        fname=tokens[i].str;
-                        if(functions.find(fname)!=functions.end())
-                        {
-                            if(functions[fname].protect) throw std::string("pallache: function \"")+fname+std::string("\" is protected delete it first");
-                            else functions.erase(fname);
-                        }
-                        i++;
-                        for(;i<I;i++)
-                        {
-                            f.expr.push_back(tokens[i]);
-                            for(std::string var: f.var) if(f.expr.back().str==var) f.expr.back().type=types::number;
-                        }
-                        functions.emplace(fname,f);
-                        const size_t J=f.dim();
-                        for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
-                        try
-                        {
-                            ans=rpncalc(f.expr);
-                            if(f.dim()==1 and tokens.back().str.size()>1 and tokens.back().str[1]==':')
-                            {
-                                f.expr.clear();
-                                f.expr.push_back(token(types::number,to_string(ans)));
-                            }
-                        }
-                        catch(std::string a)
-                        {
-                            functions.erase(fname);
-                            throw std::string("pallache: error in function definition of ")+fname;
-                        }
-                        return ans;
+                        if(tokens[j].type==types::variable) f.var.push_back(tokens[j].str);
+                        else throw std::string("pallache: function \"")+fname+std::string("\" can only have variables as arguments \"")+tokens[i].str+std::string("\" is not a variable");
                     }
-                    else throw std::string("pallache: in function definition of ")+fname+std::string(" ")+tokens[i].str+std::string(" is not a valid variable");
+                    break;
                 }
-                throw std::string("pallache: error in function definition of ")+fname;
+                #ifdef PALLACHE_DEBUG
+                PALLACHE_DEBUG_OUT("function variables");
+                for(std::string x: f.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
+                PALLACHE_DEBUG_OUT("function exression");
+                for(token x: f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                #endif
+                if(functions.find(fname)!=functions.end())
+                {
+                    if(functions[fname].protect) throw std::string("pallache: function \"")+fname+std::string("\" is protected delete it first");
+                    else functions.erase(fname);
+                }
+                functions.emplace(fname,f);
+                const size_t J=f.dim();
+                for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
+                #ifdef PALLACHE_DEBUG
+                PALLACHE_DEBUG_OUT("substituted function exression");
+                for(token x: f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                #endif
+                try
+                {
+                    ans=rpncalc(f.expr);
+                }
+                catch(std::string a)
+                {
+                    functions.erase(fname);
+                    throw std::string("pallache: error in function definition of \"")+fname+std::string("\" as a \"")+a+std::string("\" occured");
+                }
+                if(f.dim()==1 and stat)
+                {
+                    functions[fname].expr.clear();
+                    functions[fname].expr.push_back(token(types::number,to_string(ans)));
+                }
+                return ans;
             }
             else if((tokens[0].type==types::variable or tokens[0].type==types::function) and (tokens.back().str=="delvar" or tokens.back().str=="delfunc" or tokens.back().str=="-delvar" or tokens.back().str=="-delfunc"))
             {
