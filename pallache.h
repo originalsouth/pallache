@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <stack>
 #include <limits>
 #include <typeinfo>
@@ -417,18 +418,59 @@ namespace pallache
                     }
                     break;
                 }
+                functor f_old=functor(false,false);
+                if(functions.find(fname)!=functions.end())
+                {
+                    if(functions[fname].protect) throw std::string("pallache: function \"")+fname+std::string("\" is protected delete it first");
+                    else
+                    {
+                        f_old=functions[fname];
+                        functions.erase(fname);
+                    }
+                }
                 #ifdef PALLACHE_DEBUG
+                PALLACHE_DEBUG_OUT("old function variables");
+                for(std::string x: f_old.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
+                PALLACHE_DEBUG_OUT("old function exression");
+                for(token x: f_old.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
                 PALLACHE_DEBUG_OUT("function variables");
                 for(std::string x: f.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
                 PALLACHE_DEBUG_OUT("function exression");
                 for(token x: f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
                 #endif
-                if(functions.find(fname)!=functions.end())
-                {
-                    if(functions[fname].protect) throw std::string("pallache: function \"")+fname+std::string("\" is protected delete it first");
-                    else functions.erase(fname);
-                }
                 functions.emplace(fname,f);
+                if(!stat)
+                {
+                    bool cont;
+                    std::string fn;
+                    std::unordered_set<std::string> set;
+                    std::stack<std::string> stack;
+                    stack.push(fname);
+                    set.emplace(fname);
+                    while(!stack.empty())
+                    {
+                        fn=stack.top();
+                        stack.pop();
+                        for(token &t: functions[fn].expr) if(t.type==types::variable)
+                        {
+                            cont=false;
+                            for(std::string var: functions[fname].var) if(t.str==var) cont=true;
+                            if(cont) continue;
+                            else if(set.find(t.str)==set.end())
+                            {
+                                set.emplace(t.str);
+                                stack.push(t.str);
+                            }
+                            else
+                            {
+                                std::string var=t.str;
+                                if(f_old.expr.size()) functions[fname]=f_old;
+                                else functions.erase(fname);
+                                throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+t.str+std::string("\"");
+                            }
+                        }
+                    }
+                }
                 const size_t J=f.dim();
                 for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
                 #ifdef PALLACHE_DEBUG
@@ -441,7 +483,8 @@ namespace pallache
                 }
                 catch(std::string a)
                 {
-                    functions.erase(fname);
+                    if(f_old.expr.size()) functions[fname]=f_old;
+                    else functions.erase(fname);
                     throw std::string("pallache: error in function definition of \"")+fname+std::string("\" as a \"")+a+std::string("\" occured");
                 }
                 if(f.dim()==0 and stat)
