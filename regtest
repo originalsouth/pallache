@@ -15,7 +15,7 @@ cos(x-1)==1
 5!+2==122
 5!-2==118
 inf==1/0
-delvar(x)
+del(x)
 ans
 round(sin(pi)!)
 3**3**3==(2+1)**((2!+1)**sqrt(pow(3,2)))
@@ -30,9 +30,9 @@ f(x):=x+b
 1+f(5)==7
 g(x,y):=x+y+b
 1+sqrt(-g(5,4)+10)
-delvar(b)
-delfunc(f)
-delfunc(g)
+del(b)
+del(f)
+del(g)
 EOF
 cat -n | awk '{$1=$1+2;print $0}'
 exit 0
