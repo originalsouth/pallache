@@ -3,12 +3,13 @@
 #include <cstring>
 #include "pallache.h"
 
+typedef long double flt;
 using namespace std;
 
 int main(int argc,char *argv[])
 {
     char a[2048];
-    pallache::pallache<double> parser;
+    pallache::pallache<flt> parser;
     FILE *file=(argc>1)?fopen(argv[1],"r"):stdin;
     if(file) while(true)
     {
@@ -24,23 +25,14 @@ int main(int argc,char *argv[])
         {
             if(a[0]=='#') continue;
             else if(!strcmp(a,"")) continue;
-            else if(!strcmp(a,"reset_all"))
+            else if(!strcmp(a,"reset") or !strcmp(a,"clear"))
             {
-                parser.reset_all();
+                parser.reset();
                 printf("functions and variables table reinitialized\n");
-            }
-            else if(!strcmp(a,"reset_vars"))
-            {
-                parser.reset_vars();
-                printf("variables table reinitialized\n");
-            }
-            else if(!strcmp(a,"reset_funcs"))
-            {
-                parser.reset_funcs();
-                printf("functions table reinitialized\n");
             }
             else if(!strcmp(a,"help"))
             {
+                flt ans=parser["ans"];
                 printf("pallache: A small and simple header only math parser library (written in C++14):\n");
                 printf("\tbuiltin operators:\n");
                 printf("\t\t+\taddition\n");
@@ -62,63 +54,46 @@ int main(int argc,char *argv[])
                 printf("\t\t&\tbitwise and\n");
                 printf("\t\t|\tbitwise or\n");
                 printf("\t\t^\tbitwise xor\n");
+                printf("\tassignment operators:\n");
+                printf("\t\t=\tdynamic assignment\n");
+                printf("\t\t:=\tdynamic read only assignment\n");
+                printf("\t\t=:\tstatic assignment\n");
+                printf("\t\t::\tstatic read only assignment\n");
                 printf("\tbuiltin variables:\n");
-                printf("\t\tpi\t%.17g\n",parser["pi"]);
-                printf("\t\te\t%.17g\n",parser["e"]);
-                printf("\t\tphi\t%.17g\n",parser["phi"]);
-                printf("\t\tnan\t%.17g\n",parser["nan"]);
-                printf("\t\tinf\t%.17g\n",parser["inf"]);
-                printf("\t\tminf\t%.17g\n",parser["minf"]);
-                printf("\t\teps\t%.17g\n",parser["eps"]);
-                printf("\tbuiltin functions:\n\t\t");
-                printf("cos, ");
-                printf("sin, ");
-                printf("tan, ");
-                printf("acos, ");
-                printf("asin, ");
-                printf("atan, ");
-                printf("atan2, ");
-                printf("cosh, ");
-                printf("sinh, ");
-                printf("tanh, ");
-                printf("acosh, ");
-                printf("asinh, ");
-                printf("atanh, ");
-                printf("exp, ");
-                printf("log, ");
-                printf("log10, ");
-                printf("exp2, ");
-                printf("expm1, ");
-                printf("ilogb, ");
-                printf("log1p, ");
-                printf("log2, ");
-                printf("logb, ");
-                printf("pow, ");
-                printf("sqrt, ");
-                printf("cbrt, ");
-                printf("hypot, ");
-                printf("erf, ");
-                printf("erfc, ");
-                printf("tgamma, ");
-                printf("lgamma, ");
-                printf("ceil, ");
-                printf("floor, ");
-                printf("fmod, ");
-                printf("trunc, ");
-                printf("round, ");
-                printf("rint, ");
-                printf("nearbyint, ");
-                printf("remainder, ");
-                printf("abs, ");
-                printf("sign, ");
-                printf("sgn, ");
-                printf("bool, ");
-                printf("delta, ");
-                printf("kdelta, ");
-                printf("not, ");
-                printf("delvar, ");
-                printf("delfunc ");
+                printf("\t\tpi\t%.17Lg\n",parser["pi"]);
+                printf("\t\te\t%.17Lg\n",parser["e"]);
+                printf("\t\tphi\t%.17Lg\n",parser["phi"]);
+                printf("\t\tnan\t%.17Lg\n",parser["nan"]);
+                printf("\t\tinf\t%.17Lg\n",parser["inf"]);
+                printf("\t\tminf\t%.17Lg\n",parser["minf"]);
+                printf("\t\teps\t%.17Lg\n",parser["eps"]);
+                printf("\t\tans\t%.17Lg\n",ans);
+                printf("\tbuiltin functions:\n");
+                printf("\t\tcos, sin, tan\n");
+                printf("\t\tacos, asin, atan, atan2\n");
+                printf("\t\tcosh, sinh, tanh\n");
+                printf("\t\tacosh, asinh, atanh\n");
+                printf("\t\texp, exp2, expm1\n");
+                printf("\t\tlog, log10, ilogb, log1p, log2, logb\n");
+                printf("\t\tpow\n");
+                printf("\t\tsqrt, cbrt\n");
+                printf("\t\thypot\n");
+                printf("\t\terf, erfc\n");
+                printf("\t\ttgamma, lgamma\n");
+                printf("\t\tceil, floor\n");
+                printf("\t\tfmod\n");
+                printf("\t\ttrunc, round\n");
+                printf("\t\trint, nearbyint\n");
+                printf("\t\tremainder\n");
+                printf("\t\tabs, ");
+                printf("\t\tsign, sgn\n");
+                printf("\t\tbool, not\n");
+                printf("\t\tdelta, kdelta\n");
+                printf("\t\tdel\n");
+                printf("\tbuiltin commands:\n");
+                printf("\t\thelp,about, reset, clear\n");
                 printf("\n");
+                parser[pallache::to_string(ans)];
             }
             else if(!strcmp(a,"about"))
             {
@@ -136,7 +111,7 @@ int main(int argc,char *argv[])
             {
                 try
                 {
-                    printf("%.17g\n",parser(string(a)));
+                    printf("%.17Lg\n",parser(string(a)));
                 }
                 catch(string errormsg)
                 {

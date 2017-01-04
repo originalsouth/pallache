@@ -168,8 +168,7 @@ namespace pallache
             functions.emplace("delta",functor(true,true));
             functions.emplace("kdelta",functor(true,true));
             functions.emplace("not",functor(true,true));
-            functions.emplace("delvar",functor(true,true));
-            functions.emplace("delfunc",functor(true,true));
+            functions.emplace("del",functor(true,true));
             functions.emplace("pi",functor(true,true));
             functions.emplace("e",functor(true,true));
             functions.emplace(std::string(e6x9),functor(true,true));
@@ -421,7 +420,8 @@ namespace pallache
                 functor f_old=functor(false,false);
                 if(functions.find(fname)!=functions.end())
                 {
-                    if(functions[fname].protect) throw std::string("pallache: function \"")+fname+std::string("\" is protected delete it first");
+                    if(functions[fname].builtin) throw std::string("pallache: cannot change \"")+fname+std::string("\" because it is builtin");
+                    else if(functions[fname].protect) throw std::string("pallache: cannot change \"")+fname+std::string("\" because it is protected delete it first");
                     else
                     {
                         f_old=functions[fname];
@@ -507,7 +507,7 @@ namespace pallache
                 }
                 return ans;
             }
-            else if((tokens[0].type==types::variable or tokens[0].type==types::function) and (tokens.back().str=="delvar" or tokens.back().str=="delfunc" or tokens.back().str=="-delvar" or tokens.back().str=="-delfunc"))
+            else if((tokens[0].type==types::variable or tokens[0].type==types::function) and (tokens.back().str=="del" or tokens.back().str=="-del"))
             {
                 if(tokens.size()>2) throw std::string("pallache: syntax error \"")+tokens.back().str+std::string("\" only takes one argument");
                 else
@@ -1124,37 +1124,35 @@ namespace pallache
         }
         bool var(std::string a)
         {
-            return (functions.find(a)!=functions.end() and !functions[a].dim());
+            return (functions.find(a)!=functions.end() and functions[a].dim()==0);
         }
         bool func(std::string a)
         {
             return (functions.find(a)!=functions.end());
         }
-        void var(std::string a,X x)
+        void var(std::string a,X x,bool protect=false)
         {
-            parse_infix(a+std::string("=")+to_string(x));
+            if(protect) parse_infix(a+std::string(":=")+to_string(x));
+            else parse_infix(a+std::string("=")+to_string(x));
         }
-        void func(std::string a,std::string b)
+        void func(std::string a,std::string b,bool protect=false,bool dynamic=true)
         {
-            parse_infix(a+std::string("=")+b);
+            if(protect)
+            {
+                if(dynamic) parse_infix(a+std::string(":=")+b);
+                else parse_infix(a+std::string("::")+b);
+            }
+            else
+            {
+                if(dynamic) parse_infix(a+std::string("=")+b);
+                else parse_infix(a+std::string("=:")+b);
+            }
         }
-        void del_var(std::string a)
+        void del(std::string a)
         {
-            if(var(a)) functions.erase(a);
+            if(var(a)) parse_infix(std::string("del(")+a+std::string(")"));
         }
-        void del_func(std::string a)
-        {
-            if(func(a)) functions.erase(a);
-        }
-        void reset_vars()
-        {
-            init();
-        }
-        void reset_funcs()
-        {
-            init();
-        }
-        void reset_all()
+        void reset()
         {
             init();
         }
