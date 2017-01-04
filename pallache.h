@@ -213,6 +213,7 @@ namespace pallache
             else if(a=="|") return 8;
             else if(a=="&&") return 9;
             else if(a=="||") return 10;
+            else if(a=="=" or a==":=" or a=="=:" or a=="::") return 11;
             else return 10;
         }
         bool test_digit(size_t i,const size_t aSz,std::string a,std::vector<token> &tokens)
