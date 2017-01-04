@@ -85,7 +85,7 @@ int main(int argc,char *argv[])
                 printf("\t\ttrunc, round\n");
                 printf("\t\trint, nearbyint\n");
                 printf("\t\tremainder\n");
-                printf("\t\tabs, \n");
+                printf("\t\tabs \n");
                 printf("\t\tsign, sgn\n");
                 printf("\t\tbool, not\n");
                 printf("\t\tdelta, kdelta\n");
