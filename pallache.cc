@@ -91,7 +91,7 @@ int main(int argc,char *argv[])
                 printf("\t\tdelta, kdelta\n");
                 printf("\t\tdel\n");
                 printf("\tbuiltin commands:\n");
-                printf("\t\thelp,about, reset, clear\n");
+                printf("\t\thelp, about, reset, clear\n");
                 printf("\n");
                 parser[pallache::to_string(ans)];
             }
