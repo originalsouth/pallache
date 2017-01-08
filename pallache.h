@@ -1096,7 +1096,8 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=p*random.uniform_int(x[q-2],x[q-1]);
+                                    if(x[q-2]<x[q-1]) x[q-2]=p*random.uniform_int(x[q-2],x[q-1]);
+                                    else x[q-2]=p*random.uniform_int(x[q-1],x[q-2]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
@@ -1106,7 +1107,8 @@ namespace pallache
                                 const size_t q=x.size();
                                 if(q>1)
                                 {
-                                    x[q-2]=p*random.uniform_real(x[q-2],x[q-1]);
+                                    if(x[q-2]<x[q-1]) x[q-2]=p*random.uniform_real(x[q-2],x[q-1]);
+                                    else x[q-2]=p*random.uniform_real(x[q-1],x[q-2]);
                                     x.pop_back();
                                 }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
