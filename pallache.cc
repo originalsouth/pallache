@@ -92,7 +92,7 @@ int main(int argc,char *argv[])
                 printf("\t\tsign, sgn\n");
                 printf("\t\tbool, not\n");
                 printf("\t\tdelta, kdelta\n");
-                printf("\t\trand_uniform_int,rand_uniform_real,rand_normal\n");
+                printf("\t\trand_uniform_int, rand_uniform_real, rand_normal\n");
                 printf("\t\tdel\n");
                 printf("\tbuiltin commands:\n");
                 printf("\t\thelp, about, reset, clear\n");
