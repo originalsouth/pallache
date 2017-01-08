@@ -67,6 +67,9 @@ int main(int argc,char *argv[])
                 printf("\t\tinf\t%.17Lg\n",parser["inf"]);
                 printf("\t\tminf\t%.17Lg\n",parser["minf"]);
                 printf("\t\teps\t%.17Lg\n",parser["eps"]);
+                printf("\t\trand_uniform_int\t%.17Lg\n",parser["rand_uniform_int"]);
+                printf("\t\trand_uniform_real\t%.17Lg\n",parser["rand_uniform_real"]);
+                printf("\t\trand_normal\t%.17Lg\n",parser["rand_normal"]);
                 printf("\t\tans\t%.17Lg\n",ans);
                 printf("\tbuiltin functions:\n");
                 printf("\t\tcos, sin, tan\n");
@@ -89,6 +92,7 @@ int main(int argc,char *argv[])
                 printf("\t\tsign, sgn\n");
                 printf("\t\tbool, not\n");
                 printf("\t\tdelta, kdelta\n");
+                printf("\t\trand_uniform_int,rand_uniform_real,rand_normal\n");
                 printf("\t\tdel\n");
                 printf("\tbuiltin commands:\n");
                 printf("\t\thelp, about, reset, clear\n");
