@@ -118,10 +118,35 @@ namespace pallache
                 }
             }
         };
-        struct random
+        struct random_t
         {
-            std::random_device random;
-        };
+            std::mt19937 mt;
+            random_t()
+            {
+                std::random_device dev;
+                mt.seed(dev());
+            }
+            void seed(X seed)
+            {
+                mt.seed(seed);
+            }
+            X uniform_int(X a,X b)
+            {
+                std::uniform_int_distribution<int> uniform_int_dist((int)a,(int)b);
+                return (X)uniform_int_dist(mt);
+            }
+            X uniform_real(X a,X b)
+            {
+                std::uniform_real_distribution<X> uniform_real_dist(a,b);
+                return uniform_real_dist(mt);
+            }
+            X normal(X mu,X sigma)
+            {
+                std::normal_distribution<X> normal_dist(mu,sigma);
+                return normal_dist(mt);
+            }
+
+        } random;
         X ans;
         std::unordered_map<std::string,functor> functions;
         void init()
@@ -173,6 +198,9 @@ namespace pallache
             functions.emplace("delta",functor(true,true));
             functions.emplace("kdelta",functor(true,true));
             functions.emplace("not",functor(true,true));
+            functions.emplace("rand_uniform_int",functor(true,true));
+            functions.emplace("rand_uniform_real",functor(true,true));
+            functions.emplace("rand_normal",functor(true,true));
             functions.emplace("del",functor(true,true));
             functions.emplace("pi",functor(true,true));
             functions.emplace("e",functor(true,true));
@@ -556,6 +584,9 @@ namespace pallache
                         else if(t.str=="inf") x.push_back(p*std::numeric_limits<X>::infinity());
                         else if(t.str=="minf") x.push_back(-p*std::numeric_limits<X>::infinity());
                         else if(t.str=="eps") x.push_back(p*std::numeric_limits<X>::epsilon());
+                        else if(t.str=="rand_uniform_int") x.push_back(p*random.uniform_int(0.0,1.0));
+                        else if(t.str=="rand_uniform_real") x.push_back(p*random.uniform_real(0.0,1.0));
+                        else if(t.str=="rand_normal") x.push_back(p*random.normal(0.0,1.0));
                         else if(t.str=="ans") x.push_back(p*ans);
                         else if(functions.find(t.str)!=functions.end())
                         {
@@ -1058,6 +1089,36 @@ namespace pallache
                             {
                                 const size_t q=x.size();
                                 if(q>0) x[q-1]=(X)p*(!(bool)x[q-1]);
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
+                            }
+                            else if(t.str=="rand_uniform_int")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=p*random.uniform_int(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
+                            }
+                            else if(t.str=="rand_uniform_real")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=p*random.uniform_real(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
+                                else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
+                            }
+                            else if(t.str=="rand_normal")
+                            {
+                                const size_t q=x.size();
+                                if(q>1)
+                                {
+                                    x[q-2]=p*random.normal(x[q-2],x[q-1]);
+                                    x.pop_back();
+                                }
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 2");
                             }
                             else throw std::string("pallache: error builtin function \"")+t.str+std::string("\" seems not to be defined");
