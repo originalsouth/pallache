@@ -16,9 +16,8 @@ It allows users to define scalar functions of arbitrary dimensions (zero being a
 Functions can be made static or dynamic meaning the change or remain when defined by another (changing) variable.
 
 ### Todo
-* Add more (special) functions and operators
+* Add more (special) functions, distributions and operators
 * Add possibility for user to define custom operators
-* Add (psuedo) random number generator(s)
 * Add support for lists
 * Add support for complex numbers (maybe quaternions?)
 * Add support for automatic differentiation of functions (using dual numbers)
