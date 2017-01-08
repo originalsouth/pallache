@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include <stack>
 #include <limits>
+#include <random>
 #include <typeinfo>
 
 #ifdef PALLACHE_DEBUG
@@ -116,6 +117,10 @@ namespace pallache
                     t.str=to_string(x);
                 }
             }
+        };
+        struct random
+        {
+            std::random_device random;
         };
         X ans;
         std::unordered_map<std::string,functor> functions;
@@ -1088,7 +1093,7 @@ namespace pallache
             }
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("values");
-            for(X f: x) PALLACHE_DEBUG_OUT("%f",f);
+            for(X f: x) PALLACHE_DEBUG_OUT("%.17Lg",(long double)f);
             #endif
             if(x.size()==1)
             {
