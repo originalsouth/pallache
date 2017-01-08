@@ -484,17 +484,14 @@ namespace pallache
                     while(!stack.empty())
                     {
                         fn=stack.top();
+                        set.emplace(fn);
                         stack.pop();
                         for(token &t: functions[fn].expr) if(t.type==types::variable)
                         {
                             cont=false;
                             for(std::string var: functions[fname].var) if(t.str==var) cont=true;
                             if(cont) continue;
-                            else if(set.find(t.str)==set.end())
-                            {
-                                set.emplace(t.str);
-                                stack.push(t.str);
-                            }
+                            else if(set.find(t.str)==set.end()) stack.push(t.str);
                             else
                             {
                                 std::string var=t.str;
