@@ -9,14 +9,21 @@ A small and simple header only math parser library (written in C++14):
 /* Inclusion of that code is forced upon me by a scary anonymous guy with a gun*/
 ```
 Feel free to reuse and contribute, pull requests are very welcome!
-This program is (and forever will be) a work in progress.
+This code is (and forever will be) a work in progress.
+
+Pallache is uses to shunting yard alogrithm to evaluate mathematical expressions.
+It allows users to define scalar functions of arbitrary dimensions (zero being a variable).
+Functions can be made static or dynamic meaning the change or remain when defined by another (changing) variable.
 
 ### Todo
-* Implement function definitions 
-* Improvements / Stability maintenance 
-* Add support for random numbers
-* Support for automatic differentiation of functions 
-* Support for complex numbers
+* Add more (special) functions, distributions and operators
+* Add possibility for user to define custom operators
+* Add support for lists
+* Add support for complex numbers (maybe quaternions?)
+* Add support for automatic differentiation of functions (using dual numbers)
+* Add support for vectors and matrices (do we really want to go there?)
+* Improve help and documentation
+* Improvements / Bugfixes / Stability / Maintenance (the usual)
 
 ### Building
 To build run something like:
