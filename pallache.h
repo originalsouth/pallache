@@ -497,7 +497,7 @@ namespace pallache
                                 std::string var=t.str;
                                 if(f_old.expr.size()) functions[fname]=f_old;
                                 else functions.erase(fname);
-                                throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+t.str+std::string("\"");
+                                throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+var+std::string("\"");
                             }
                         }
                     }
