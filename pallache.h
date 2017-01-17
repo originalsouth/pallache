@@ -108,10 +108,21 @@ namespace pallache
             {
                 return var.size();
             }
+            std::string p_expr()
+            {
+                std::string ret;
+                for(token t:expr) ret+=t.str;
+                return ret;
+            }
+            bool is_var(std::string a)
+            {
+                for(std::string v:var) if(a==v) return true;
+                return false;
+            }
             void substitute(size_t i,X x)
             {
                 PALLACHE_DEBUG_OUT("%s = %.17Lg",var[i].c_str(),(long double)x);
-                for(token &t: expr) if(t.str==var[i])
+                for(token &t:expr) if(t.str==var[i])
                 {
                     t.type=types::number;
                     t.str=to_string(x);
@@ -330,7 +341,7 @@ namespace pallache
             for(size_t i=0;i<tSz-1;i++) if(tokens[i].type==types::variable and tokens[i+1].type==types::bracket_open) tokens[i].type=types::function;
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("tokens");
-            for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+            for(token x:tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
             #endif
         }
         bool test_op(token &t,std::stack<token> &stack)
@@ -352,7 +363,7 @@ namespace pallache
         {
             std::stack<token> stack;
             std::vector<token> train;
-            for(token t: tokens) switch(t.type)
+            for(token t:tokens) switch(t.type)
             {
                 case types::number:
                 {
@@ -427,7 +438,7 @@ namespace pallache
             tokens=train;
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("tokens");
-            for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+            for(token x:tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
             #endif
         }
         X rpncalc(std::vector<token> &tokens)
@@ -464,18 +475,17 @@ namespace pallache
                 }
                 #ifdef PALLACHE_DEBUG
                 PALLACHE_DEBUG_OUT("old function variables");
-                for(std::string x: f_old.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
+                for(std::string x:f_old.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
                 PALLACHE_DEBUG_OUT("old function exression");
-                for(token x: f_old.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                for(token x:f_old.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
                 PALLACHE_DEBUG_OUT("function variables");
-                for(std::string x: f.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
+                for(std::string x:f.var) PALLACHE_DEBUG_OUT("%s",x.c_str());
                 PALLACHE_DEBUG_OUT("function exression");
-                for(token x: f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                for(token x:f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
                 #endif
                 functions.emplace(fname,f);
                 if(!stat)
                 {
-                    bool cont;
                     std::string fn;
                     std::unordered_set<std::string> set;
                     std::stack<std::string> stack;
@@ -484,19 +494,22 @@ namespace pallache
                     while(!stack.empty())
                     {
                         fn=stack.top();
-                        set.emplace(fn);
                         stack.pop();
-                        for(token &t: functions[fn].expr) if(t.type==types::variable)
+                        for(token t:functions[fn].expr)
                         {
-                            cont=false;
-                            for(std::string var: functions[fname].var) if(t.str==var) cont=true;
-                            if(cont) continue;
-                            else if(set.find(t.str)==set.end()) stack.push(t.str);
-                            else
+                            if(functions[fn].is_var(t.str)) continue;
+                            else if(functions[t.str].builtin) continue;
+                            else if(t.str==fname)
                             {
+                                std::string expr=functions[fn].p_expr();
                                 if(f_old.expr.size()) functions[fname]=f_old;
                                 else functions.erase(fname);
-                                throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+fn+std::string("\"");
+                                throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+fn+std::string("=")+expr+std::string("\"");
+                            }
+                            else if(functions.find(t.str)!=functions.end() and set.find(t.str)==set.end())
+                            {
+                                stack.push(t.str);
+                                set.emplace(t.str);
                             }
                         }
                     }
@@ -505,7 +518,7 @@ namespace pallache
                 for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
                 #ifdef PALLACHE_DEBUG
                 PALLACHE_DEBUG_OUT("substituted function exression");
-                for(token x: f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                for(token x:f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
                 #endif
                 try
                 {
@@ -525,10 +538,10 @@ namespace pallache
                 else if(stat)
                 {
                     bool cont;
-                    for(token &t: functions[fname].expr) if(t.type==types::variable)
+                    for(token &t:functions[fname].expr) if(t.type==types::variable)
                     {
                         cont=false;
-                        for(std::string var: functions[fname].var) if(t.str==var) cont=true;
+                        for(std::string var:functions[fname].var) if(t.str==var) cont=true;
                         if(cont) continue;
                         std::vector<token> expr;
                         expr.push_back(t);
@@ -555,7 +568,7 @@ namespace pallache
                 }
             }
             std::vector<X> x;
-            for(token t: tokens)
+            for(token t:tokens)
             {
                 switch(t.type)
                 {
@@ -1135,7 +1148,7 @@ namespace pallache
                                 }
                                 #ifdef PALLACHE_DEBUG
                                 PALLACHE_DEBUG_OUT("function");
-                                for(token x: tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
+                                for(token x:tokens) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
                                 #endif
                                 x.push_back(p*rpncalc(f.expr));
                             }
@@ -1152,7 +1165,7 @@ namespace pallache
             }
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("values");
-            for(X f: x) PALLACHE_DEBUG_OUT("%.17Lg",(long double)f);
+            for(X f:x) PALLACHE_DEBUG_OUT("%.17Lg",(long double)f);
             #endif
             if(x.size()==1)
             {
