@@ -501,10 +501,16 @@ namespace pallache
                             else if(functions[t.str].builtin) continue;
                             else if(t.str==fname)
                             {
+                                #ifdef PALLACHE_DEBUG
                                 std::string expr=functions[fn].p_expr();
+                                #endif
                                 if(f_old.expr.size()) functions[fname]=f_old;
                                 else functions.erase(fname);
+                                #ifdef PALLACHE_DEBUG
                                 throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+fn+std::string("=")+expr+std::string("\"");
+                                #else
+                                throw std::string("pallache: unsupported recursion in function definition \"")+fname+std::string("\" detected in variable \"")+fn+std::string("\"");
+                                #endif
                             }
                             else if(functions.find(t.str)!=functions.end() and set.find(t.str)==set.end())
                             {
