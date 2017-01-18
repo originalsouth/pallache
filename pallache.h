@@ -338,6 +338,7 @@ namespace pallache
                 else throw std::string("pallache: unknown token \"")+a[i]+std::string("\"");
             }
             const size_t tSz=tokens.size();
+            if(tSz==0) throw std::string("pallache: input parsed empty");
             for(size_t i=0;i<tSz-1;i++) if(tokens[i].type==types::variable and tokens[i+1].type==types::bracket_open) tokens[i].type=types::function;
             #ifdef PALLACHE_DEBUG
             PALLACHE_DEBUG_OUT("tokens");
