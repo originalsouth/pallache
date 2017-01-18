@@ -447,6 +447,7 @@ namespace pallache
             else if(tokens.back().str==":=" or tokens.back().str=="=" or tokens.back().str=="=:" or tokens.back().str=="::")
             {
                 const size_t I=tokens.size();
+                bool p=false;
                 bool stat=(tokens.back().str.size()>1 and tokens.back().str[1]==':');
                 functor f(false,tokens.back().str[0]==':'?true:false);
                 tokens.pop_back();
@@ -454,6 +455,12 @@ namespace pallache
                 for(size_t i=0;i<I;i++) if(tokens[i].type==types::internal)
                 {
                     fname=tokens[i-1].str;
+                    if(!(tokens[i-1].type==types::variable or tokens[i-1].type==types::function)) throw std::string("pallache: cannot assign \"")+fname+std::string("\" as it is invalid");
+                    else if(fname[0]=='-')
+                    {
+                        p=true;
+                        fname.erase(0,1);
+                    }
                     f.expr=std::vector<token>(&tokens[i+1],&tokens[I-1]);
                     if(i>1) for(size_t j=0;j<i-1;j++)
                     {
@@ -461,6 +468,11 @@ namespace pallache
                         else throw std::string("pallache: function \"")+fname+std::string("\" can only have variables as arguments");
                     }
                     break;
+                }
+                if(p)
+                {
+                    f.expr.push_back(token(types::number,"-1"));
+                    f.expr.push_back(token(types::operators,"*"));
                 }
                 functor f_old=functor(false,false);
                 if(functions.find(fname)!=functions.end())
