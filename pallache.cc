@@ -21,16 +21,16 @@ int main(int argc,char *argv[])
             break;
         }
         a[strcspn(a,"\n")]=0;
-        if(strcmp(a,"q") and strcmp(a,"quit") and strcmp(a,"exit"))
+        if(strcmp(a,":q") and strcmp(a,":quit") and strcmp(a,":exit"))
         {
             if(a[0]=='#') continue;
             else if(!strcmp(a,"")) continue;
-            else if(!strcmp(a,"reset") or !strcmp(a,"clear"))
+            else if(!strcmp(a,":reset") or !strcmp(a,":clear"))
             {
                 parser.reset();
                 printf("functions and variables table reinitialized\n");
             }
-            else if(!strcmp(a,"help"))
+            else if(!strcmp(a,":h") or !strcmp(a,":help"))
             {
                 flt ans=parser["ans"];
                 printf("pallache: A small and simple header only math parser library (written in C++14):\n");
@@ -95,11 +95,11 @@ int main(int argc,char *argv[])
                 printf("\t\trand_uniform_int, rand_uniform_real, rand_normal\n");
                 printf("\t\tdel\n");
                 printf("\tbuiltin commands:\n");
-                printf("\t\thelp, about, reset, clear\n");
+                printf("\t\t:help, :about, :version, :reset, :clear, :exit\n");
                 printf("\n");
                 parser[pallache::to_string(ans)];
             }
-            else if(!strcmp(a,"about"))
+            else if(!strcmp(a,":about"))
             {
                 printf("pallache: A small and simple header only math parser library (written in C++14):\n");
                 printf("\t/* By BC van Zuiden -- Leiden, November 2015 */\n");
@@ -110,6 +110,19 @@ int main(int argc,char *argv[])
                 printf("\t/* Inclusion of that code is forced upon me by a scary anonymous guy with a gun*/\n");
                 printf("Feel free to reuse and contribute, pull requests are very welcome! This code is (and forever will be) a work in progress.\n");
                 printf("website: https://github.com/originalsouth/pallache\n");
+            }
+            else if(!strcmp(a,":version"))
+            {
+                #ifdef TATTOO
+                printf("pallache: git-hash \t %s\n",TATTOO);
+                #else
+                printf("pallache: git-hash \t %s\n","undefined");
+                #endif
+                #ifdef SHASUM
+                printf("pallache: source-hash \t %s\n",SHASUM);
+                #else
+                printf("pallache: source-hash \t %s\n","undefined");
+                #endif
             }
             else
             {
