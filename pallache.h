@@ -281,6 +281,24 @@ namespace pallache
             }
             else return false;
         }
+        bool test_fact(size_t i,const size_t aSz,std::string a)
+        {
+            if(a[i]=='!')
+            {
+                size_t k=i+1;
+                for(;k<aSz;k++) if(a[k]!='!') break;
+                size_t l=0,m=k;
+                for(;l<aSz;m++)
+                {
+                    if(a[m]=='=') l++;
+                    else break;
+                }
+                if(l==1) k--;
+                if(k-i==0) return false;
+                else return true;
+            }
+            else return false;
+        }
         void tokenize(std::string a,std::vector<token> &tokens)
         {
             const size_t aSz=a.size();
@@ -306,11 +324,21 @@ namespace pallache
                     i+=k-j;
                     tokens.push_back(token(types::variable,b));
                 }
-                else if(a[i]=='!')
+                else if(test_fact(i,aSz,a))
                 {
                     for(;k<aSz;k++) if(a[k]!='!') break;
-                    tokens.push_back(token(types::operators,a.substr(j,k-j)));
-                    i+=k-j;
+                    size_t l=0,m=k;
+                    for(;l<aSz;m++)
+                    {
+                        if(a[m]=='=') l++;
+                        else break;
+                    }
+                    if(l==1) k--;
+                    if(k-j!=0)
+                    {
+                        tokens.push_back(token(types::operators,a.substr(j,k-j)));
+                        i+=k-j;
+                    }
                 }
                 else if(op(a[i]))
                 {
