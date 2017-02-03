@@ -266,7 +266,7 @@ namespace pallache
             else if(i+1<aSz)
             {
                 if(a[i]=='.' and isdigit(a[i+1])) return true;
-                else if(a[i]=='-' and (isdigit(a[i+1]) or a[i+1]=='.') and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().str[0]=='!'))) return true;
+                else if(a[i]=='-' and (isdigit(a[i+1]) or a[i+1]=='.') and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().type==types::bracket_close or tokens.back().str[0]=='!'))) return true;
                 else return false;
             }
             else return false;
@@ -276,7 +276,7 @@ namespace pallache
             if(isalpha(a[i])) return true;
             else if(i+1<aSz)
             {
-                if(a[i]=='-' and isalpha(a[i+1]) and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().str[0]=='!'))) return true;
+                if(a[i]=='-' and isalpha(a[i+1]) and (tokens.empty() or !(tokens.back().type==types::number or tokens.back().type==types::variable or tokens.back().type==types::function or tokens.back().type==types::bracket_close or tokens.back().str[0]=='!'))) return true;
                 else return false;
             }
             else return false;
