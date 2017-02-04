@@ -63,6 +63,12 @@ If you are lazy -- like me -- try:
 rlwrap ./pallache
 ```
 
+In order to see a list of builtin functions/variables/commands etc. type:
+```
+rlwrap ./pallache
+>>> :help
+```
+
 ### Acknowledgements
 * [Samuel Pallache](https://en.wikipedia.org/wiki/Samuel_Pallache) yarr!
 * [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)
