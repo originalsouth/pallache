@@ -11,7 +11,7 @@ debug: pallache.cc pallache.h
 	$(CC) $(TATTOO) $(SHASUM) -Wall -Wextra -std=c++14 -g3 -D PALLACHE_DEBUG -o pallache pallache.cc
 
 test: pallache
-	./regtest
+	@./regtest
 
 version:
 	@printf "pallache-make: git-hash\t%s\n" $(TATTOO_VAL)
