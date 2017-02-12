@@ -137,7 +137,7 @@ int main(int argc,char *argv[])
         fgets(a,2048,file);
         if(feof(file))
         {
-            printf("exit\n");
+            if(prompt) printf(":exit\n");
             break;
         }
         a[strcspn(a,"\n")]=0;
