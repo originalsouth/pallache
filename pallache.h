@@ -162,7 +162,7 @@ namespace pallache
         std::unordered_map<std::string,functor> functions;
         void init()
         {
-            ans=0.0;
+            ans=0.0L;
             functions.clear();
             functions.emplace("cos",functor(true,true));
             functions.emplace("sin",functor(true,true));
@@ -225,9 +225,9 @@ namespace pallache
         }
         X sign(X x)
         {
-            if(x>0.0) return 1.0;
-            else if(x<0.0) return -1.0;
-            else return 0.0;
+            if(x>0.0L) return 1.0L;
+            else if(x<0.0L) return -1.0L;
+            else return 0.0L;
         }
         bool flt(char x)
         {
@@ -562,7 +562,7 @@ namespace pallache
                     }
                 }
                 const size_t J=f.dim();
-                for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0);
+                for(size_t j=0;j<J;j++) f.substitute(J-j-1,0.0L);
                 #ifdef PALLACHE_DEBUG
                 PALLACHE_DEBUG_OUT("substituted function exression");
                 for(token x:f.expr) PALLACHE_DEBUG_OUT("%s (%d)",x.str.c_str(),x.type);
@@ -626,23 +626,23 @@ namespace pallache
                     break;
                     case types::variable:
                     {
-                        X p=1.0;
+                        X p=1.0L;
                         if(t.str[0]=='-')
                         {
-                            p=-1.0;
+                            p=-1.0L;
                             t.str.erase(0,1);
                         }
-                        if(t.str=="pi") x.push_back(p*acos(-1.0));
-                        else if(t.str=="e") x.push_back(p*std::exp(1.0));
-                        else if(t.str=="phi") x.push_back(p*0.5*(1+std::sqrt(5.0)));
+                        if(t.str=="pi") x.push_back(p*acos(-1.0L));
+                        else if(t.str=="e") x.push_back(p*std::exp(1.0L));
+                        else if(t.str=="phi") x.push_back(p*0.5L*(1.0L+std::sqrt(5.0L)));
                         else if(t.str==std::string(e6x9)) x.push_back(p*(X)052);
                         else if(t.str=="nan") x.push_back(p*std::numeric_limits<X>::quiet_NaN());
                         else if(t.str=="inf") x.push_back(p*std::numeric_limits<X>::infinity());
                         else if(t.str=="minf") x.push_back(-p*std::numeric_limits<X>::infinity());
                         else if(t.str=="eps") x.push_back(p*std::numeric_limits<X>::epsilon());
-                        else if(t.str=="rand_uniform_int") x.push_back(p*random.uniform_int(0.0,1.0));
-                        else if(t.str=="rand_uniform_real") x.push_back(p*random.uniform_real(0.0,1.0));
-                        else if(t.str=="rand_normal") x.push_back(p*random.normal(0.0,1.0));
+                        else if(t.str=="rand_uniform_int") x.push_back(p*random.uniform_int(0.0L,1.0L));
+                        else if(t.str=="rand_uniform_real") x.push_back(p*random.uniform_real(0.0L,1.0L));
+                        else if(t.str=="rand_normal") x.push_back(p*random.normal(0.0L,1.0L));
                         else if(t.str=="ans") x.push_back(p*ans);
                         else if(functions.find(t.str)!=functions.end())
                         {
@@ -717,7 +717,7 @@ namespace pallache
                         else if(t.str=="!")
                         {
                             const size_t q=x.size();
-                            if(q>0) x[q-1]=std::tgamma(x[q-1]+1.0);
+                            if(q>0) x[q-1]=std::tgamma(x[q-1]+1.0L);
                             else throw std::string("pallache: syntax error operator \"!\" requires one argument");
                         }
                         else if(t.str=="&&")
@@ -845,10 +845,10 @@ namespace pallache
                     break;
                     case types::function:
                     {
-                        X p=1.0;
+                        X p=1.0L;
                         if(t.str[0]=='-')
                         {
-                            p=-1.0;
+                            p=-1.0L;
                             t.str.erase(0,1);
                         }
                         if(functions[t.str].builtin)
@@ -1128,7 +1128,7 @@ namespace pallache
                             else if(t.str=="delta")
                             {
                                 const size_t q=x.size();
-                                if(q>0) x[q-1]=p*(x[q-1]==0.0?std::numeric_limits<X>::infinity():0.0);
+                                if(q>0) x[q-1]=p*(x[q-1]==0.0L?std::numeric_limits<X>::infinity():0.0L);
                                 else throw std::string("pallache: the function \"")+t.str+std::string("\" has dimesionality 1");
                             }
                             else if(t.str=="kdelta")
