@@ -9,10 +9,12 @@ using namespace std;
 struct parser_padding
 {
     bool perror;
+    bool prompt;
     pallache::pallache<flt> parser;
     parser_padding()
     {
         perror=true;
+        prompt=true;
     }
     void reset()
     {
@@ -124,42 +126,80 @@ struct parser_padding
             if(perror) printf("%s in expression \"%s\"\n",errormsg.c_str(),a.c_str());
         }
     }
+    bool pre_proccess(char *a)
+    {
+        if(strcmp(a,":quit") and strcmp(a,":q") and strcmp(a,":exit") and strcmp(a,":x"))
+        {
+            if(a[0]=='#') return true;
+            else if(!strcmp(a,"")) return true;
+            else if(!strcmp(a,":reset") or !strcmp(a,":r") or !strcmp(a,":clear") or !strcmp(a,":c")) reset();
+            else if(!strcmp(a,":help") or !strcmp(a,":h")) help();
+            else if(!strcmp(a,":about") or !strcmp(a,":a")) about();
+            else if(!strcmp(a,":version") or !strcmp(a,":V")) version();
+            else if(!strcmp(a,":silent") or !strcmp(a,":s")) perror=false;
+            else if(!strcmp(a,":verbose") or !strcmp(a,":v")) perror=true;
+            else if(!strcmp(a,":unprompt") or !strcmp(a,":u")) prompt=false;
+            else if(!strcmp(a,":prompt") or !strcmp(a,":p")) prompt=true;
+            else proccess(string(a));
+        }
+        else return false;
+        return true;
+    }
+    void pre_proccess(FILE *file)
+    {
+        char a[2048];
+        if(file) while(true)
+        {
+            if(prompt) printf(">>> ");
+            fgets(a,2048,file);
+            if(feof(file))
+            {
+                if(prompt) printf(":x\n");
+                break;
+            }
+            a[strcspn(a,"\n")]=0;
+            if(pre_proccess(a)) continue;
+            else exit(EXIT_SUCCESS);
+        }
+    }
 } parser;
 
 int main(int argc,char *argv[])
 {
-    bool prompt=true;
-    char a[2048];
-    FILE *file=(argc>1)?fopen(argv[1],"r"):stdin;
-    if(file) while(true)
-    {
-        if(prompt) printf(">>> ");
-        fgets(a,2048,file);
-        if(feof(file))
-        {
-            if(prompt) printf(":exit\n");
-            break;
-        }
-        a[strcspn(a,"\n")]=0;
-        if(strcmp(a,":quit") and strcmp(a,":q") and strcmp(a,":exit") and strcmp(a,":x"))
-        {
-            if(a[0]=='#') continue;
-            else if(!strcmp(a,"")) continue;
-            else if(!strcmp(a,":reset") or !strcmp(a,":r") or !strcmp(a,":clear") or !strcmp(a,":c")) parser.reset();
-            else if(!strcmp(a,":help") or !strcmp(a,":h")) parser.help();
-            else if(!strcmp(a,":about") or !strcmp(a,":a")) parser.about();
-            else if(!strcmp(a,":version") or !strcmp(a,":V")) parser.version();
-            else if(!strcmp(a,":silent") or !strcmp(a,":s")) parser.perror=false;
-            else if(!strcmp(a,":verbose") or !strcmp(a,":v")) parser.perror=true;
-            else if(!strcmp(a,":unprompt") or !strcmp(a,":up")) prompt=false;
-            else if(!strcmp(a,":prompt") or !strcmp(a,":p")) prompt=true;
-            else parser.proccess(string(a));
-        }
-        else return EXIT_SUCCESS;
-    }
+    if(argc==1) parser.pre_proccess(stdin);
     else
     {
-        printf("pallache: file \"%s\" not found\n",argv[1]);
-        return EXIT_FAILURE;
+        for(int i=1;i<argc;i++)
+        {
+            if(argv[i][0]=='-')
+            {
+                if(!strcmp(argv[i],"-")) parser.pre_proccess(stdin);
+                else if(argv[i][1]=='r' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"reset"))) parser.reset();
+                else if(argv[i][1]=='h' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"help"))) parser.help();
+                else if(argv[i][1]=='a' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"about"))) parser.about();
+                else if(argv[i][1]=='V' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"version"))) parser.version();
+                else if(argv[i][1]=='s' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"silent"))) parser.perror=false;
+                else if(argv[i][1]=='v' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"verbose"))) parser.perror=true;
+                else if(argv[i][1]=='u' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"unprompt"))) parser.prompt=false;
+                else if(argv[i][1]=='p' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"prompt"))) parser.prompt=true;
+                else if(argv[i][1]=='c' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"calc"))) parser.pre_proccess(argv[++i]);
+                else
+                {
+                    printf("pallache: \"%s\" is not a supported argument\n",argv[i]);
+                    continue;
+                }
+            }
+            else
+            {
+                FILE *file=fopen(argv[i],"r");
+                if(!file)
+                {
+                    printf("pallache: unable to open input file \"%s\"\n",argv[i]);
+                    continue;
+                }
+                parser.pre_proccess(file);
+            }
+        }
     }
+    return EXIT_SUCCESS;
 }
