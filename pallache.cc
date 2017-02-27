@@ -116,6 +116,7 @@ struct parser_padding
         printf("\t\t:verbose (:v) (default)\n");
         printf("\t\t:unprompt (:u)\n");
         printf("\t\t:prompt (:p) (default)\n");
+        printf("\t\t:load (:l) [file name]\n");
         printf("\tcommand line: pallache [argmument1] [argument2] [...]\n");
         printf("\tcommand line arguments:\n");
         printf("\t\t[file]\n");
@@ -181,6 +182,13 @@ struct parser_padding
             else if(!strcmp(a,":verbose") or !strcmp(a,":v")) perror=true;
             else if(!strcmp(a,":unprompt") or !strcmp(a,":u")) prompt=false;
             else if(!strcmp(a,":prompt") or !strcmp(a,":p")) prompt=true;
+            else if(!strncmp(a,":load ",6) or !strncmp(a,":l ",3))
+            {
+                char *fname=strtokar(a,' ',1);
+                FILE *file=fopen(fname,"r");
+                if(!file) printf("pallache: unable to open input file \"%s\"\n",fname);
+                file_proccess(file);
+            }
             else proccess(string(a));
         }
         else return false;

@@ -18,7 +18,6 @@ Functions can be made static or dynamic meaning the change or remain when define
 ### Roadmap
 * Add more (special) functions, distributions and operators
 * Add possibility for user to define custom operators
-* Add ability to load file from session
 * Improve help and documentation
 * Improvements / Bug fixes / Stability / Maintenance (the usual)
 * Your suggestion?
