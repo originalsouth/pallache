@@ -117,9 +117,9 @@ struct parser_padding
         printf("\t\t:unprompt (:u)\n");
         printf("\t\t:prompt (:p) (default)\n");
         printf("\t\t:load (:l) [file name]\n");
-        printf("\tcommand line: pallache [argmument1] [argument2] [...]\n");
+        printf("\tcommand line: pallache [argmument 1] [argument 2] [...]\n");
         printf("\tcommand line arguments:\n");
-        printf("\t\t[file]\n");
+        printf("\t\t[file name]\n");
         printf("\t\t- (stdin) (default)\n");
         printf("\t\t--reset (-r)\n");
         printf("\t\t--help (-h)\n");
@@ -129,7 +129,7 @@ struct parser_padding
         printf("\t\t--verbose (-v) (default)\n");
         printf("\t\t--unprompt (-u)\n");
         printf("\t\t--prompt (-p) (default)\n");
-        printf("\t\t--calc (-c) \"expr1;expr2;...\"\n");
+        printf("\t\t--calc (-c) \"expression 1;expression 2;...\"\n");
         parser[pallache::to_string(ans)];
     }
     void about()
