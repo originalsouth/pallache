@@ -1,3 +1,5 @@
+#define BufSz 4096
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -6,15 +8,35 @@
 typedef long double flt;
 using namespace std;
 
+char* strtokar(char *source,char delim,unsigned int pos)
+{
+    static char dest[BufSz];
+    unsigned int i=0,dlim=0;
+    for(;dlim<pos;i++)
+    {
+        if(source[i]==delim) dlim++;
+        else if(source[i]==0)
+        {
+            dest[0]=0;
+            return dest;
+        }
+    }
+    strcpy(dest,&source[i]);
+    for(i=0;dest[i]>0;i++) if(dest[i]==delim) dest[i]=0;
+    return dest;
+}
+
 struct parser_padding
 {
     bool perror;
     bool prompt;
+    bool interfaced;
     pallache::pallache<flt> parser;
     parser_padding()
     {
         perror=true;
         prompt=true;
+        interfaced=false;
     }
     void reset()
     {
@@ -86,8 +108,27 @@ struct parser_padding
         printf("\t\trand_uniform_int, rand_uniform_real, rand_normal\n");
         printf("\t\tdel\n");
         printf("\tbuiltin commands:\n");
-        printf("\t\t:help, :about, :version, :reset, :clear, :exit\n");
-        printf("\n");
+        printf("\t\t:quit (:q), :exit (:x)\n");
+        printf("\t\t:help (:h)\n");
+        printf("\t\t:about (:a)\n");
+        printf("\t\t:version (:V)\n");
+        printf("\t\t:silent (:s)\n");
+        printf("\t\t:verbose (:v) (default)\n");
+        printf("\t\t:unprompt (:u)\n");
+        printf("\t\t:prompt (:p) (default)\n");
+        printf("\tcommand line: pallache [argmument1] [argument2] [...]\n");
+        printf("\tcommand line arguments:\n");
+        printf("\t\t[file]\n");
+        printf("\t\t- (stdin) (default)\n");
+        printf("\t\t--reset (-r)\n");
+        printf("\t\t--help (-h)\n");
+        printf("\t\t--about (-a)\n");
+        printf("\t\t--version (-V)\n");
+        printf("\t\t--silent (-s)\n");
+        printf("\t\t--verbose (-v) (default)\n");
+        printf("\t\t--unprompt (-u)\n");
+        printf("\t\t--prompt (-p) (default)\n");
+        printf("\t\t--calc (-c) \"expr1;expr2;...\"\n");
         parser[pallache::to_string(ans)];
     }
     void about()
@@ -145,44 +186,59 @@ struct parser_padding
         else return false;
         return true;
     }
-    void pre_proccess(FILE *file)
+    void line_proccess(char *a)
     {
-        char a[2048];
+        char *b;
+        interfaced=true;
+        size_t I=0,A=strlen(a);
+        for(size_t i=0;i<A;i++) if(a[i]==';') I++;
+        if(I) for(size_t i=0;i<=I;i++)
+        {
+            b=strtokar(a,';',i);
+            if(pre_proccess(b)) continue;
+            else exit(EXIT_SUCCESS);
+        }
+        else if(!pre_proccess(a)) exit(EXIT_SUCCESS);
+    }
+    void file_proccess(FILE *file)
+    {
+        interfaced=true;
+        char a[BufSz];
         if(file) while(true)
         {
-            if(prompt) printf(">>> ");
-            fgets(a,2048,file);
+            if(prompt and file==stdin) printf(">>> ");
+            fgets(a,BufSz,file);
             if(feof(file))
             {
                 if(prompt) printf(":x\n");
                 break;
             }
             a[strcspn(a,"\n")]=0;
-            if(pre_proccess(a)) continue;
-            else exit(EXIT_SUCCESS);
+            if(prompt and file!=stdin and a[0]!='#') printf(">>> %s\n",a);
+            line_proccess(a);
         }
     }
 } parser;
 
 int main(int argc,char *argv[])
 {
-    if(argc==1) parser.pre_proccess(stdin);
+    if(argc==1) parser.file_proccess(stdin);
     else
     {
         for(int i=1;i<argc;i++)
         {
             if(argv[i][0]=='-')
             {
-                if(!strcmp(argv[i],"-")) parser.pre_proccess(stdin);
+                if(!strcmp(argv[i],"-")) parser.file_proccess(stdin);
                 else if(argv[i][1]=='r' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"reset"))) parser.reset();
-                else if(argv[i][1]=='h' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"help"))) parser.help();
-                else if(argv[i][1]=='a' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"about"))) parser.about();
-                else if(argv[i][1]=='V' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"version"))) parser.version();
+                else if(argv[i][1]=='h' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"help"))) parser.help(),parser.interfaced=true;
+                else if(argv[i][1]=='a' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"about"))) parser.about(),parser.interfaced=true;
+                else if(argv[i][1]=='V' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"version"))) parser.version(),parser.interfaced=true;
                 else if(argv[i][1]=='s' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"silent"))) parser.perror=false;
                 else if(argv[i][1]=='v' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"verbose"))) parser.perror=true;
                 else if(argv[i][1]=='u' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"unprompt"))) parser.prompt=false;
                 else if(argv[i][1]=='p' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"prompt"))) parser.prompt=true;
-                else if(argv[i][1]=='c' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"calc"))) parser.pre_proccess(argv[++i]);
+                else if(argv[i][1]=='c' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"calc"))) parser.line_proccess(argv[++i]);
                 else
                 {
                     printf("pallache: \"%s\" is not a supported argument\n",argv[i]);
@@ -197,9 +253,10 @@ int main(int argc,char *argv[])
                     printf("pallache: unable to open input file \"%s\"\n",argv[i]);
                     continue;
                 }
-                parser.pre_proccess(file);
+                parser.file_proccess(file);
             }
         }
     }
+    if(!parser.interfaced) parser.file_proccess(stdin);
     return EXIT_SUCCESS;
 }
