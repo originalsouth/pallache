@@ -249,7 +249,8 @@ int main(int argc,char *argv[])
                 else if(argv[i][1]=='c' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"calc"))) parser.line_proccess(argv[++i]);
                 else
                 {
-                    printf("pallache: \"%s\" is not a supported argument\n",argv[i]);
+                    parser.interfaced=true;
+                    printf("pallache: \"%s\" is not a supported command line argument\n",argv[i]);
                     continue;
                 }
             }
