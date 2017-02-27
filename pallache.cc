@@ -46,8 +46,8 @@ struct parser_padding
     void help()
     {
         flt ans=parser["ans"];
-        printf("pallache: A small and simple header only math parser library (written in C++14):\n");
-        printf("\tbuiltin operators:\n");
+        printf("pallache: A small and simple header only math parser library:\n");
+        printf("\tbuilt-in operators:\n");
         printf("\t\t+\taddition\n");
         printf("\t\t-\tsubstraction\n");
         printf("\t\t*\tmultiply\n");
@@ -72,7 +72,7 @@ struct parser_padding
         printf("\t\t:=\tdynamic read only assignment\n");
         printf("\t\t=:\tstatic assignment\n");
         printf("\t\t::\tstatic read only assignment\n");
-        printf("\tbuiltin variables:\n");
+        printf("\tbuilt-in variables:\n");
         printf("\t\tpi\t%.17Lg\n",parser["pi"]);
         printf("\t\te\t%.17Lg\n",parser["e"]);
         printf("\t\tphi\t%.17Lg\n",parser["phi"]);
@@ -84,7 +84,7 @@ struct parser_padding
         printf("\t\trand_uniform_real\t%.17Lg\n",parser["rand_uniform_real"]);
         printf("\t\trand_normal\t%.17Lg\n",parser["rand_normal"]);
         printf("\t\tans\t%.17Lg\n",ans);
-        printf("\tbuiltin functions:\n");
+        printf("\tbuilt-in functions:\n");
         printf("\t\tcos, sin, tan\n");
         printf("\t\tacos, asin, atan, atan2\n");
         printf("\t\tcosh, sinh, tanh\n");
@@ -107,7 +107,7 @@ struct parser_padding
         printf("\t\tdelta, kdelta\n");
         printf("\t\trand_uniform_int, rand_uniform_real, rand_normal\n");
         printf("\t\tdel\n");
-        printf("\tbuiltin commands:\n");
+        printf("\tbuilt-in commands:\n");
         printf("\t\t:quit (:q), :exit (:x)\n");
         printf("\t\t:help (:h)\n");
         printf("\t\t:about (:a)\n");
