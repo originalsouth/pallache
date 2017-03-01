@@ -39,13 +39,13 @@
 
 namespace pallache
 {
-    static const char e6x9[]={0x74,0x68,0x65,0x5f,0x61,0x6e,0x73,
-                              0x77,0x65,0x72,0x5f,0x74,0x6f,0x5f,
-                              0x6c,0x69,0x66,0x65,0x5f,0x74,0x68,
-                              0x65,0x5f,0x75,0x6e,0x69,0x76,0x65,
-                              0x72,0x73,0x65,0x5f,0x61,0x6e,0x64,
-                              0x5f,0x65,0x76,0x65,0x72,0x79,0x74,
-                              0x68,0x69,0x6e,0x67,0x00,0x00,0x00};
+    static constexpr char e6x9[]={0x74,0x68,0x65,0x5f,0x61,0x6e,0x73,
+                                  0x77,0x65,0x72,0x5f,0x74,0x6f,0x5f,
+                                  0x6c,0x69,0x66,0x65,0x5f,0x74,0x68,
+                                  0x65,0x5f,0x75,0x6e,0x69,0x76,0x65,
+                                  0x72,0x73,0x65,0x5f,0x61,0x6e,0x64,
+                                  0x5f,0x65,0x76,0x65,0x72,0x79,0x74,
+                                  0x68,0x69,0x6e,0x67,0x00,0x00,0x00};
     template<class X> std::string to_string(X x)
     {
         char buffer[2048];
@@ -238,7 +238,7 @@ namespace pallache
         }
         bool op(char x)
         {
-            const static std::string ops="+-*/^&|!=%:<>";
+            static const std::string ops="+-*/^&|!=%:<>";
             const size_t opsSz=ops.size();
             for(size_t i=0;i<opsSz;i++) if(x==ops[i]) return true;
             return false;
@@ -632,7 +632,7 @@ namespace pallache
                             p=-1.0L;
                             t.str.erase(0,1);
                         }
-                        if(t.str=="pi") x.push_back(p*acos(-1.0L));
+                        if(t.str=="pi") x.push_back(p*std::atan2(0.0L,-1.0L));
                         else if(t.str=="e") x.push_back(p*std::exp(1.0L));
                         else if(t.str=="phi") x.push_back(p*0.5L*(1.0L+std::sqrt(5.0L)));
                         else if(t.str==std::string(e6x9)) x.push_back(p*(X)052);
