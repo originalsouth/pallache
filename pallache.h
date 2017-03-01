@@ -632,7 +632,7 @@ namespace pallache
                             p=-1.0L;
                             t.str.erase(0,1);
                         }
-                        if(t.str=="pi") x.push_back(p*std::atan2(0.0L,-1.0L));
+                        if(t.str=="pi") x.push_back(p*std::acos(-1.0L));
                         else if(t.str=="e") x.push_back(p*std::exp(1.0L));
                         else if(t.str=="phi") x.push_back(p*0.5L*(1.0L+std::sqrt(5.0L)));
                         else if(t.str==std::string(e6x9)) x.push_back(p*(X)052);
