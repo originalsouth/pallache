@@ -11,7 +11,7 @@ A small and simple header only math parser library (written in C++14):
 Feel free to reuse and contribute, pull requests are very welcome!
 This code is (and forever will be) a work in progress.
 
-Pallache is uses to shunting yard algorithm to evaluate mathematical expressions.
+Pallache is a calculator library that uses the shunting yard algorithm to evaluate mathematical expressions.
 It allows users to define scalar functions of arbitrary dimensions (zero being a variable).
 Functions can be made static or dynamic meaning the change or remain when defined by another (changing) variable.
 
@@ -65,7 +65,7 @@ In order to see a list of built-in functions/variables/commands etc. type:
 rlwrap ./pallache
 >>> :help
 ```
-or alternatively:
+or alternatively try:
 ```
 ./pallache --help
 ```
