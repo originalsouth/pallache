@@ -30,12 +30,14 @@ struct parser_padding
 {
     bool perror;
     bool prompt;
+    bool echo;
     bool interfaced;
     pallache::pallache<flt> parser;
     parser_padding()
     {
         perror=true;
         prompt=true;
+        echo=false;
         interfaced=false;
     }
     void reset()
@@ -117,6 +119,8 @@ struct parser_padding
         printf("\t\t:unprompt (:u)\n");
         printf("\t\t:prompt (:p) (default)\n");
         printf("\t\t:load (:l) [file name]\n");
+        printf("\t\t:noecho (:N) (default)\n");
+        printf("\t\t:echo (:e)\n");
         printf("\tcommand line: pallache [argmument 1] [argument 2] [...]\n");
         printf("\tcommand line arguments:\n");
         printf("\t\t[file name]\n");
@@ -170,6 +174,7 @@ struct parser_padding
     }
     bool pre_proccess(char *a)
     {
+        if(echo) printf("%s\n",a);
         if(strcmp(a,":quit") and strcmp(a,":q") and strcmp(a,":exit") and strcmp(a,":x"))
         {
             if(a[0]=='#') return true;
@@ -182,6 +187,8 @@ struct parser_padding
             else if(!strcmp(a,":verbose") or !strcmp(a,":v")) perror=true;
             else if(!strcmp(a,":unprompt") or !strcmp(a,":u")) prompt=false;
             else if(!strcmp(a,":prompt") or !strcmp(a,":p")) prompt=true;
+            else if(!strcmp(a,":noecho") or !strcmp(a,":N")) echo=true;
+            else if(!strcmp(a,":echo") or !strcmp(a,":e")) echo=false;
             else if(!strncmp(a,":load ",6) or !strncmp(a,":l ",3))
             {
                 char *fname=strtokar(a,' ',1);
@@ -246,6 +253,8 @@ int main(int argc,char *argv[])
                 else if(argv[i][1]=='v' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"verbose"))) parser.perror=true;
                 else if(argv[i][1]=='u' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"unprompt"))) parser.prompt=false;
                 else if(argv[i][1]=='p' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"prompt"))) parser.prompt=true;
+                else if(argv[i][1]=='N' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"noecho"))) parser.echo=false;
+                else if(argv[i][1]=='e' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"echo"))) parser.echo=true;
                 else if(argv[i][1]=='c' or (argv[i][1]=='-' and !strcmp(&argv[i][2],"calc"))) parser.line_proccess(argv[++i]);
                 else
                 {
