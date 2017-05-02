@@ -481,7 +481,8 @@ namespace pallache
                 functor f(false,tokens.back().str[0]==':'?true:false);
                 tokens.pop_back();
                 std::string fname;
-                for(size_t i=0;i<I;i++) if(tokens[i].type==types::internal)
+                if(tokens[0].type==types::internal) throw std::string("pallache: cannot assign nothingness");
+                for(size_t i=1;i<I;i++) if(tokens[i].type==types::internal)
                 {
                     fname=tokens[i-1].str;
                     if(!(tokens[i-1].type==types::variable or tokens[i-1].type==types::function)) throw std::string("pallache: cannot assign \"")+fname+std::string("\" as it is invalid");
