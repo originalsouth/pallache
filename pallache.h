@@ -314,10 +314,12 @@ namespace pallache
                 else if(test_digit(i,aSz,a,tokens))
                 {
                     size_t dots=0;
+                    size_t eE=0;
                     for(;k<aSz;k++)
                     {
                         if(a[k]=='.') dots++;
-                        if((!flt(a[k]) and !((a[k]=='+' or a[k]=='-') and (a[k-1]=='e' or a[k-1]=='E'))) or dots>1) break;
+                        if(a[k]=='e' or a[k]=='E') eE++;
+                        if((!flt(a[k]) and !((a[k]=='+' or a[k]=='-') and (a[k-1]=='e' or a[k-1]=='E'))) or dots>1 or eE>1) break;
                     }
                     tokens.push_back(token(types::number,a.substr(j,k-j)));
                     i+=k-j;
