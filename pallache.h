@@ -614,6 +614,17 @@ namespace pallache
                     {
                         if(!functions[tokens[0].str].builtin)
                         {
+                            functor f=functions[tokens[0].str];
+                            const size_t I=f.dim();
+                            for(size_t i=0;i<I;i++) f.substitute(I-i-1,0.0);
+                            try
+                            {
+                                ans=rpncalc(f.expr);
+                            }
+                            catch(std::string a)
+                            {
+                                (void) a;
+                            }
                             functions.erase(tokens[0].str);
                             return tokens.back().str[0]!='-'?ans:-ans;
                         }
