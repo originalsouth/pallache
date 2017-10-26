@@ -548,7 +548,7 @@ namespace pallache
                         {
                             if(functions[fn].is_var(t.str)) continue;
                             else if(functions[t.str].builtin) continue;
-                            else if(t.str==fname)
+                            else if(t.str==fname or t.str=="-"+fname)
                             {
                                 #ifdef PALLACHE_DEBUG
                                 std::string expr=functions[fn].p_expr();
