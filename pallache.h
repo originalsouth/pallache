@@ -59,11 +59,11 @@ namespace pallache
         {
             value=std::stold(a);
         }
-        catch(std::invalid_argument arg)
+        catch(std::invalid_argument &arg)
         {
             throw std::string("pallache: invalid argument error");
         }
-        catch(std::out_of_range oerr)
+        catch(std::out_of_range &oerr)
         {
             throw std::string("pallache: overflow error");
         }
