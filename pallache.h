@@ -11,19 +11,20 @@
 #error "pallache: C++ compiler too old requires at least C++11 to work (update compiler)."
 #endif
 
+#include <algorithm>
+#include <cctype>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <cmath>
-#include <cctype>
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
-#include <stack>
 #include <limits>
 #include <random>
+#include <stack>
+#include <stdexcept>
+#include <string>
 #include <typeinfo>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #ifdef PALLACHE_DEBUG
 #define PALLACHE_DEBUG_OUT(str,...)\
