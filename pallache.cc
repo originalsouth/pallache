@@ -61,7 +61,7 @@ struct parser_padding
         printf("\t\t||\tlogical or\n");
         printf("\t\t^^\tlogical xor\n");
         printf("\t\t==\tlogical equal\n");
-        printf("\t\t!=\tlogical inequal\n");
+        printf("\t\t!=\tlogical unequal\n");
         printf("\t\t<\tsmaller than\n");
         printf("\t\t>\tlarger than\n");
         printf("\t\t<=\tsmaller  or equal than\n");
